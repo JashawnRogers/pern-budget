@@ -111,5 +111,46 @@ module.exports = {
             console.error(error)
             return res.status(500).json({ message: 'Internal server error', error: error.message })
         }
+    },
+    getTransactions: async (req, res) => {
+        try {
+            if (!req.session.user) {
+                return res.status(401).json({ message: 'User not authorized' })
+            }
+
+            const userId = req.session.user.id
+            let { page, limit } = req.query
+            
+            page = parseInt(page) || 1;
+            limit = parseInt(limit) || 10;
+            const offset = (page - 1) * limit;
+
+            const getTransactionsQuery = `
+                SELECT * FROM transactions 
+                WHERE user_id = $1
+                ORDER BY created_at DESC
+                LIMIT $2 OFFSET $3;
+            `
+            const { rows: transactions } = await pool.query(getTransactionsQuery, [userId, limit, offset])
+            // Total transaction count
+            const countQuery = 'SELECT COUNT(*) FROM transactions WHERE user_id = $1;' 
+            const { rows } = await pool.query(countQuery, [userId])
+            const totalTransactions = parseInt(rows[0].count)
+
+            return res.status(200).json({
+                transactions,
+                pagination: {
+                    total: totalTransactions,
+                    page,
+                    limit,
+                    totalPages: Math.ceil(totalTransactions / limit),
+                    hasNextPage: page * limit < totalTransactions,
+                    hasPrevPage: page > 1
+                }
+            })
+        } catch (error) {
+            console.error('Error fetching transactions', error)
+            return res.status(500).json({ message: 'Internal server error', error: error.message })
+        }
     }
 }
