@@ -4,4 +4,3 @@ CREATE TABLE session (
     expire TIMESTAMP(6) NOT NULL
 );
 
--- user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE
