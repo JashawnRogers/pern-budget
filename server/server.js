@@ -4,7 +4,7 @@ const session = require('express-session')
 const pgSession = require('connect-pg-simple')(session)
 const pool = require('./config/dbEntry')
 const userRoute = require('../server/routes/user')
-
+require('dotenv').config()
 
 const app = express()
 
@@ -20,7 +20,7 @@ app.use(session({
         pool,
         tableName: 'session',
     }),
-    secret: 'super top secret secret',
+    secret: process.env,SESSION_SECRET,
     saveUninitialized: true,
     resave: false,
     cookie: { maxAge: 60000 * 60 * 24 }
