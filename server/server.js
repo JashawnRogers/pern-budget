@@ -5,6 +5,7 @@ const pgSession = require('connect-pg-simple')(session)
 const pool = require('./config/dbEntry')
 const userRoute = require('../server/routes/user')
 const transactionsRoute = require('../server/routes/transactions')
+const budgetsRoute = require('../server/routes/budgets')
 require('dotenv').config()
 
 const app = express()
@@ -30,6 +31,7 @@ app.use(session({
 // Whatever code is stored in userRoute will be accessable through the /user endpoint
 app.use('/user', userRoute)
 app.use('/transactions', transactionsRoute)
+app.user('budget/', budgetsRoute)
 
 
 app.listen(8000, () => {

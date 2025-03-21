@@ -19,6 +19,12 @@ module.exports = {
             // start pg transaction
             await client.query('BEGIN')
 
+            const existingCategory = await client.query('SELECT category FROM user_budgets WHERE user_id = $1 and category = $2', [userId, category])
+
+            if (existingCategory.rowCount === 0) {
+                return res.status(404).json({ message: 'Category not found. Please create a new one or add to an existing category' })
+            }
+
             const insertQuery = 'INSERT INTO transactions (user_id, amount, type, category, description, vendor) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;'
             const { rows } = await client.query(insertQuery, [userId, amount, type, category, description || null, vendor || null])
 
