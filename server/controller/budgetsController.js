@@ -12,7 +12,7 @@ module.exports = {
             }
 
             const { category, limit } = req.body
-            const userId = req.session.id
+            const userId = req.session.user.id
             if (!category || !limit) {
                 return res.status(400).json({ message: 'Category and limit are required fields'})
             }
@@ -45,7 +45,7 @@ module.exports = {
             }
 
             const { category, limit, budgetId } = req.body
-            const userId = req.session.id
+            const userId = req.session.user.id
 
             if (category === undefined && limit === undefined) {
                 res.status(400).json({ message: 'No value changed. To make a change, value must differ from what was previously saved' })
@@ -120,10 +120,52 @@ module.exports = {
 
             return res.status(200).json({ message: 'Budget successfully deleted', budget: rows[0] })
         } catch (error) {
+            await client.query('ROLLBACK')
             console.error(error)
             return res.status(500).json({ message: 'Internal server error', error: error.message })
         } finally {
             client.release()
         }
     },
+
+    getBudget: async (req, res) => {
+        const client = await pool.connect()
+
+        try {
+            if (!req.session.user) {
+                return res.status(404).json({ message: 'User not authorized' })
+            }
+
+            const userId = req.session.user.id
+            const { category } = req.params
+
+            await client.query('BEGIN')
+
+            // Get budget limit
+            const budgetQuery = 'SELECT amount_limit FROM user_budgets WHERE user_id = $1 AND category = $2;'
+            const budgetResult = await client.query(budgetQuery, [userId, category])
+
+            if (budgetResult.rowCount === 0) {
+                await client.query('ROLLBACK');
+                return res.status(404).json({ message: 'Budget not found' })
+            }
+            const limit = budgetResult.rows[0].amount_limit
+
+            // Calculate total spending for the budget category
+            const totalSpentQuery = 'SELECT COALESCE(SUM(amount), 0) AS total_spent FROM transactions WHERE user_id = $1 AND category = $2;'
+            const totalSpentResult = await client.query(totalSpentQuery, [userId, category])
+            const totalSpent = totalSpentResult.rows[0].total_spent
+
+            await client.query('COMMIT')
+
+           return res.status(200).json({ category, limit, total_spent: totalSpent })
+
+        } catch (error) {
+            await client.query('ROLLBACK')
+            console.error(error)
+            return res.status(500).json({ message: 'Internal server error', error: error.message })
+        } finally {
+            client.release()
+        }
+    }
 }
