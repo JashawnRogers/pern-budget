@@ -44,7 +44,9 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized' })
             }
 
-            const { category, limit, userId, budgetId } = req.body
+            const { category, limit, budgetId } = req.body
+            const userId = req.session.id
+
             if (category === undefined && limit === undefined) {
                 res.status(400).json({ message: 'No value changed. To make a change, value must differ from what was previously saved' })
             }
@@ -80,5 +82,48 @@ module.exports = {
         } finally {
             client.release()
         }
-    }
+    },
+    deleteBudget: async (req, res) => {
+        const client = pool.connect()
+
+        try {
+            if (!req.session.user) {
+                return res.status(401).json({ message: 'User not authorized' })
+            }
+
+            const userId = req.session.user.id
+            const budgetId = parseInt(req.params.id, 10)
+            
+            if (isNaN(budgetId)) {
+                return res.status(404).json({ message: 'Invalid budget ID' })
+            }
+
+            client.query('BEGIN')
+
+            // Check if the budget exists before attempting to delete
+            const checkQuery = 'SELECT * FROM user_budgets WHERE user_id = $1 AND budget_id = $2'
+            const checkResult = await client.query(checkQuery, [userId, budgetId])
+
+            if (checkResult.rowCount === 0) {
+                await client.query('ROLLBACK')
+                return res.status(404).json({ message: 'Budget not found' })
+            }
+
+            const deleteQuery = 'DELETE FROM user_budgets WHERE user_id = $1 AND budget_id = $2'
+            const { rowCount, rows } = await pool.query(deleteQuery, [userId, budgetId]) // rowCount indicates how many rows were affected
+
+            await client.query('COMMIT')
+
+            if (rowCount === 0) {
+                return res.status(404).json({ message: 'Budget not found' })
+            }
+
+            return res.status(200).json({ message: 'Budget successfully deleted', budget: rows[0] })
+        } catch (error) {
+            console.error(error)
+            return res.status(500).json({ message: 'Internal server error', error: error.message })
+        } finally {
+            client.release()
+        }
+    },
 }

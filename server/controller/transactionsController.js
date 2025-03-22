@@ -106,13 +106,13 @@ module.exports = {
             const transactionId = req.params.id 
 
             const query = 'DELETE FROM transactions WHERE id = $1 AND user_id = $2'
-            const { rowCount } = await pool.query(query, [transactionId, userId]) // rowCount indicates how many rows were affected
+            const { rowCount, rows } = await pool.query(query, [transactionId, userId]) // rowCount indicates how many rows were affected
 
             if (rowCount === 0) {
                 return res.status(404).json({ message: 'Transaction not found' })
             }
 
-            return res.status(200).json({ message: 'Transaction successfully deleted' })
+            return res.status(200).json({ message: 'Transaction successfully deleted', transaction: rows[0] })
         } catch (error) {
             console.error(error)
             return res.status(500).json({ message: 'Internal server error', error: error.message })
