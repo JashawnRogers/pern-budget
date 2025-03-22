@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Server for budgeting application using PERN tech stack",
+  "homepage": "https://github.com/JashawnRogers/pern-budget#readme",
+  "bugs": {
+    "url": "https://github.com/JashawnRogers/pern-budget/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JashawnRogers/pern-budget.git"
+  },
+  "license": "ISC",
+  "author": "Jashawn Rogers",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-pg-simple": "^10.0.0",
+    "cookieparser": "^0.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "pg": "^8.14.0",
+    "uuid": "^11.1.0"
+  }
+}
