@@ -29,9 +29,9 @@ app.use(session({
 }))
 // ROUTES
 // Whatever code is stored in userRoute will be accessable through the /user endpoint
-app.use('/user', userRoute)
-app.use('/transactions', transactionsRoute)
-app.user('budget/', budgetsRoute)
+app.use('/api/user', userRoute)
+app.use('/api/transactions', transactionsRoute)
+app.use('/api/budget', budgetsRoute)
 
 
 app.listen(8000, () => {
