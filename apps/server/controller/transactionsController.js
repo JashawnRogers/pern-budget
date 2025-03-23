@@ -9,7 +9,7 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized'})
             }
 
-            const { amount, type, category ,description, vendor } = req.body
+            const { amount, type, category ,description, vendor, createdAt } = req.body
             const userId = req.session.user.id
 
             if (!amount || !type || !category ) {
@@ -25,8 +25,8 @@ module.exports = {
                 return res.status(404).json({ message: 'Category not found. Please create a new one or add to an existing category' })
             }
 
-            const insertQuery = 'INSERT INTO transactions (user_id, amount, type, category, description, vendor) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;'
-            const { rows } = await client.query(insertQuery, [userId, amount, type, category, description || null, vendor || null])
+            const insertQuery = 'INSERT INTO transactions (user_id, amount, type, category, description, vendor, created_at) VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, NOW())) RETURNING *;'
+            const { rows } = await client.query(insertQuery, [userId, amount, type, category, description || null, vendor || null, createdAt || null])
 
             await client.query('COMMIT')
             res.status(201).json({ message: 'Transaction added successfully', transaction: rows[0] })
@@ -49,7 +49,7 @@ module.exports = {
             const userId = req.session.user.id
             const transactionId = req.params.id
 
-            const { amount, type, category, description, vendor } = req.body
+            const { amount, type, category, description, vendor, createdAt } = req.body
 
             if (amount === undefined && type === undefined && category === undefined && description === undefined && vendor === undefined) {
                 return res.status(400).json({ error: 'No valid fields provided for update' })
@@ -63,8 +63,9 @@ module.exports = {
                 type = COALESCE($2, type), 
                 category = COALESCE($3, category), 
                 description = COALESCE($4, description), 
-                vendor = COALESCE($5, vendor)
-            WHERE id = $6 AND user_id = $7 
+                vendor = COALESCE($5, vendor),
+                created_at = COALESCE($6, created_at),
+            WHERE id = $7 AND user_id = $8 
             RETURNING *, user_id;
             `
             // If amount is undefined, null is used and COALESCE will keep the existing value
@@ -74,6 +75,7 @@ module.exports = {
                 category || null,
                 description || null,
                 vendor || null,
+                createdAt || null,
                 transactionId,
                 userId
             ]
