@@ -1,0 +1,14 @@
+{
+    "name": "monorepo",
+    "private": true,
+    "workspaces": [
+        "apps/client",
+        "apps/server"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm run dev --workspace apps/client\" \"npm run start --workspace apps/server\""
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2"
+    }
+}
