@@ -6,7 +6,7 @@ import { VscGraph } from 'react-icons/vsc'
 
 const Features = () => {
   return (
-    <section className='mt-48'>
+    <section className='mt-28'>
         <div className='flex flex-col items-center gap-2 w-auto'>
             <h2 className='montesserat-400 text-5xl'>Intelligent Features</h2>
             <p className='montesserat-300'>Create realistic budgets and track your spending effortlessly.</p>
