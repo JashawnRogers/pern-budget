@@ -1,24 +1,24 @@
 import React from 'react'
 import logo from '../../assets/logo-transparent.svg'
 import { Link } from 'react-router'
-import Button from './utils/Button'
+import Button from '../utils/Button'
 
 const Navbar = () => {
   return (
-    <nav className='sticky top-0 flex justify-between items-center pt-3'>
+    <nav className='flex justify-between items-center pt-3'>
         <div className='flex items-center'>
             <img src={logo} className='w-[350px]' alt="SpendWise logo" />
             <h1 className='ml-[-100px] montesserat-400 text-3xl'>SpendWise</h1>
         </div>
-        <ul className='flex gap-5 text-xl montesserat-300 mr-16'>
+        <ul className='flex gap-5 text-xl montesserat-300 mr-36'>
             <Link to='/'>
                 <li>Home</li>
             </Link>
-            <Link to='/about'>
-                <li>About</li>
-            </Link>
-            <Link to='/features'>
+            <Link to='#features'>
                 <li>Features</li>
+            </Link>
+            <Link to='#how-it-works'>
+                <li>How It Works</li>
             </Link>
         </ul>
         <div className='flex gap-8 mr-24'>
