@@ -13,7 +13,7 @@ const Features = () => {
             <p className='montesserat-300'>Our features keep you focused and organized to help you stay on track.</p>
         </div>
         <div className='flex flex-wrap justify-center gap-x-6 mt-12'>
-            <Card>
+            <Card className='w-[700px] h-[500px]'>
                 <div className='flex flex-col gap-y-3 ml-12 mt-6'>
                     <IoHappyOutline className='w-[50px] h-[50px]' />
                     <div>
@@ -23,7 +23,7 @@ const Features = () => {
                     </div>
                 </div>
             </Card>
-            <Card>
+            <Card className='w-[700px] h-[500px]'>
             <div className='flex flex-col gap-y-3 ml-12 mt-6 w-[600px]'>
                     <SiMinds className='w-[50px] h-[50px]' />
                     <div>
@@ -32,7 +32,7 @@ const Features = () => {
                     </div>
                 </div>
             </Card>
-            <Card className='w-[1435px] mt-8'>
+            <Card className='w-[1435px] h-[500px] mt-8'>
                 <div className='flex flex-col gap-y-3 ml-12 mt-10'>
                     <VscGraph className='w-[50px] h-[50px]'/>
                     <div className='w-[500px]'>
