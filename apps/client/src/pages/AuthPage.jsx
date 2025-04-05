@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import AuthForm from '../components/utils/AuthForm'
+import AuthForm from '../components/authPage/AuthForm'
 import Card from '../components/utils/Card'
 import authFormBG from '../assets/authform-bg.jpg'
 import { useLocation, Link } from 'react-router-dom'

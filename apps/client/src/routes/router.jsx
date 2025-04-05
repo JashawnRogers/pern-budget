@@ -1,6 +1,7 @@
 import { createBrowserRouter, redirect } from 'react-router-dom'
 import LandingPage from '../pages/LandingPage'
 import AuthPage from '../pages/AuthPage'
+import DashboardPage from '../pages/DashboardPage'
 
 // authentication function 
 // const isAuthenticated = () => {
@@ -20,6 +21,7 @@ const publicRoutes = [
     { path: "/", element: <LandingPage /> },
     { path: "/login", element: <AuthPage /> },
     { path: "/register", element: <AuthPage /> },
+    { path: "/dashboard", element: <DashboardPage /> },
 ]
 
 // Protected Routes (Wrapped in Layout)
