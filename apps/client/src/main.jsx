@@ -1,13 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
+import { RouterProvider } from 'react-router-dom'
+import router from './routes/router.jsx'
 import './index.css'
-import App from './App.jsx'
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <div className='h-full bg-linear-to-b from-[#528265] from-0% to-[#fff] to-90%'>
+      <RouterProvider router={router} />
+    </div>
   </StrictMode>,
 )

@@ -1,6 +1,6 @@
 import React from 'react'
 import logo from '../../assets/logo-transparent.svg'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import Button from '../utils/Button'
 
 const Navbar = () => {
