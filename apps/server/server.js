@@ -15,7 +15,10 @@ const app = express()
 // To communicate with client
 app.use(express.json())
 // To enable cross site communication
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}))
 //session
 app.use(session({
     store: new pgSession({
@@ -23,9 +26,14 @@ app.use(session({
         tableName: 'session',
     }),
     secret: process.env.SESSION_SECRET,
-    saveUninitialized: true,
+    saveUninitialized: false,
     resave: false,
-    cookie: { maxAge: 60000 * 60 * 24 }
+    cookie: { 
+        maxAge: 60000 * 60 * 24,
+        httpOnly: true,
+        secure: process.env.SECURE,
+        sameSite: 'lax'
+    },
 }))
 // ROUTES
 // Whatever code is stored in userRoute will be accessable through the /user endpoint
