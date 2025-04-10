@@ -6,7 +6,7 @@ import { CgProfile } from "react-icons/cg";
 
 const DashboardNav = (props) => {
   return (
-    <nav className='flex justify-around'>
+    <nav className='flex justify-around bg-white'>
         <div className='flex items-center'>
             <img src={logo} className='w-[250px]' alt="SpendWise logo" />
             <h1 className='ml-[-75px] montesserat-400 text-3xl'>SpendWise</h1>
@@ -46,8 +46,8 @@ const DashboardNav = (props) => {
             </li>
             <li>
                 <div className='flex flex-col text-sm'>
-                    <p>{props.name}</p>
-                    <p>{props.email}</p>
+                    <p className='font-bold'>{props.name}</p>
+                    <p className='text-xs'>{props.email}</p>
                 </div>
             </li>
         </ul>
