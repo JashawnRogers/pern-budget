@@ -1,6 +1,6 @@
- export const BASE_URL = 'http://localhost:8000/api/'
+ export const BASE_URL = 'http://localhost:8001/api/'
 
-export const login = async (email, password) => {
+export const login = async ({email, password}) => {
     const res = await fetch(`${BASE_URL}user/login`, {
         method: 'POST',
         credentials: 'include',
@@ -16,8 +16,8 @@ export const login = async (email, password) => {
     return res.json()
 }
 
-export const register = async (name, email, password) => {
-    const res = await fetch(`${BASE_URL}/user/register`, {
+export const register = async ({name, email, password}) => {
+    const res = await fetch(`${BASE_URL}user/register`, {
         method: 'POST',
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
@@ -47,8 +47,15 @@ export const logout = async () => {
 }
 
 export const getSession = async () => {
-     fetch(`${BASE_URL}user/session`, {
+    const res = await fetch(`${BASE_URL}user/session`, {
         method: 'GET',
         credentials: 'include',
     })
+
+    if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.error || 'Session check failed')
+    }
+
+    return res.json()
 }

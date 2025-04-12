@@ -1,8 +1,9 @@
 import React from 'react'
 import logo from '../../assets/logo-transparent.svg'
 import { NavLink } from 'react-router-dom'
-import { CiSettings } from "react-icons/ci"
-import { CgProfile } from "react-icons/cg";
+import { CiSettings } from 'react-icons/ci'
+import { CgProfile } from 'react-icons/cg'
+import LogoutButton from '../utils/LogoutButton'
 
 const DashboardNav = (props) => {
   return (
@@ -50,7 +51,11 @@ const DashboardNav = (props) => {
                     <p className='text-xs'>{props.email}</p>
                 </div>
             </li>
+            <li>
+                <LogoutButton />
+            </li>
         </ul>
+        
     </nav>
   )
 }

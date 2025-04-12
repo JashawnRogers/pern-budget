@@ -21,18 +21,15 @@ app.use(cors({
 }))
 //session
 app.use(session({
-    store: new pgSession({
-        pool,
-        tableName: 'session',
-    }),
+    store: new pgSession({ pool, tableName: 'session' }),
     secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
     resave: false,
+    saveUninitialized: false,
     cookie: { 
-        maxAge: 60000 * 60 * 24,
         httpOnly: true,
-        secure: process.env.SECURE,
-        sameSite: 'lax'
+        secure: false,
+        sameSite: 'lax',
+        maxAge: 60000 * 60 * 24
     },
 }))
 // ROUTES
@@ -42,6 +39,6 @@ app.use('/api/transactions', transactionsRoute)
 app.use('/api/budget', budgetsRoute)
 
 
-app.listen(8000, () => {
-    console.log('Server is listening on port 8000')
+app.listen(8001, () => {
+    console.log('Server is listening on port 8001')
 })

@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt')
 module.exports = {
     signUp : async (req, res) => {
         try {
+            console.log('BODY:', req.body)
             const { name, email, password } = req.body
             const hashedPassword = await bcrypt.hash(password, 10)
             const query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *'
@@ -23,6 +24,7 @@ module.exports = {
     },
     logIn: async (req, res) => {
         try {
+            console.log('BODY:', req.body)
             const { email, password } = req.body
             const query = 'SELECT user_id, email, password FROM users WHERE email = $1'
             const { rows } = await pool.query(query, [email])
@@ -39,7 +41,7 @@ module.exports = {
             }
         
             req.session.user = { id: user.user_id, email: user.email }
-
+            console.log(req.session.user)
             res.status(202).json({message: 'User successfully logged in', user: req.session.user})
         } catch (error) {
             console.error(error)
@@ -48,6 +50,7 @@ module.exports = {
     },
     logout: async (req, res) => {
         try {
+            console.log('BODY:', req.body)
             if (!req.session.user) {
                 return res.status(401).json({error: 'No user logged in'})
             }
@@ -67,6 +70,7 @@ module.exports = {
     },
     deleteUser: async (req, res) => {
         try {
+            console.log('BODY:', req.body)
             const userId = parseInt(req.params.id, 10)
             const query = 'DELETE FROM users WHERE user_id = $1 RETURNING *'
             const { rows } = await pool.query(query, [userId])
@@ -83,7 +87,7 @@ module.exports = {
     },
     getSession: async (req, res) => {
         try {
-            if (req.session.user) {
+            if (req.session?.user) {
                 return res.status(200).json({ user: req.session.user });
             } else {
                 return res.status(401).json({ message: 'Not authenticated' });

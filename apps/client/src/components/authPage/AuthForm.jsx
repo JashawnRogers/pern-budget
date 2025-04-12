@@ -1,13 +1,17 @@
-import { useState } from 'react'
+import { useRef } from 'react'
 import Button from '../utils/Button'
 
 const AuthForm = ({ isRegistering, onSubmit }) => {
-  const [name, setName] = useState('')
-  const [password, setPassword] = useState('')
-  const [email, setEmail] = useState('')
+  const nameRef = useRef()
+  const emailRef = useRef()
+  const passwordRef = useRef()
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const name = nameRef.current?.value || ''
+    const email = emailRef.current.value
+    const password = passwordRef.current.value
+
     const data = isRegistering ? { name, password, email } : { email, password }
     onSubmit(data)
   }
@@ -21,8 +25,7 @@ const AuthForm = ({ isRegistering, onSubmit }) => {
             <label htmlFor="name" className='montesserat-400 pl-8 text-xl'>Name:</label>
             <input 
             type='text'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            ref={nameRef}
             required
             className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'
             />
@@ -33,8 +36,7 @@ const AuthForm = ({ isRegistering, onSubmit }) => {
           <label htmlFor='email' className='montesserat-400 pl-8 text-xl'>Email:</label>
           <input 
           type='text'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          ref={emailRef}
           required
           className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'
           />
@@ -44,8 +46,7 @@ const AuthForm = ({ isRegistering, onSubmit }) => {
           <label htmlFor='username' className='montesserat-400 text-xl'>Password:</label>
           <input 
           type='password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          ref={passwordRef}
           required
           className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'
           />
