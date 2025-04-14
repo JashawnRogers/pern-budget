@@ -5,7 +5,6 @@ import DashboardContent from '../components/DashboardPage/DashboardContent'
 const DashboardPage = () => {
   return (
     <>
-        <DashboardNav name='Jashawn Rogers' email='jashawncodes@gmail.com' />
         <DashboardContent />
     </>
   )

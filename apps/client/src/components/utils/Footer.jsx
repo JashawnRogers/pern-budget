@@ -8,7 +8,7 @@ import { FaXTwitter } from 'react-icons/fa6'
 
 const Footer = () => {
   return (
-    <footer className='w-full mx-10 mt-8 mb-10 flex flex-col items-center'>
+    <footer className='w-full mx-auto mt-8 mb-10 flex flex-col items-center'>
         <div className='flex mt-16'>
             <img src={logo} className='w-[170px]' alt="SpendWise logo" />
             <h3 className='montesserat-400 text-xl ml-[-50px] mt-3'>Spendwise</h3>

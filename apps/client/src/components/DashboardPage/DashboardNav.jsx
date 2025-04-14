@@ -4,8 +4,11 @@ import { NavLink } from 'react-router-dom'
 import { CiSettings } from 'react-icons/ci'
 import { CgProfile } from 'react-icons/cg'
 import LogoutButton from '../utils/LogoutButton'
+import { useAuth } from '../../api/auth/authContext'
 
-const DashboardNav = (props) => {
+const DashboardNav = () => {
+    const { user } = useAuth()
+
   return (
     <nav className='flex justify-around bg-white'>
         <div className='flex items-center'>
@@ -14,12 +17,12 @@ const DashboardNav = (props) => {
         </div>
         <ul className='flex items-center gap-5 text-xl montesserat-300'>
             <li>
-                <NavLink>
+                <NavLink to='/dashboard'>
                     <p>Overview</p>
                 </NavLink>
             </li>
             <li>
-                <NavLink>
+                <NavLink to='/budget'>
                     <p>Budgets</p>
                 </NavLink>
             </li>
@@ -47,8 +50,9 @@ const DashboardNav = (props) => {
             </li>
             <li>
                 <div className='flex flex-col text-sm'>
-                    <p className='font-bold'>{props.name}</p>
-                    <p className='text-xs'>{props.email}</p>
+                    {/* Make first letter upper case */}
+                    <p className='font-bold'>{user.name.charAt(0).toUpperCase() + user.name.slice(1)}</p>
+                    <p className='text-xs'>{user.email}</p>
                 </div>
             </li>
             <li>

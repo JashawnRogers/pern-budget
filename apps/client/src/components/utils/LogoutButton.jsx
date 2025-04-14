@@ -1,4 +1,4 @@
-import { logout } from '../../auth/auth'
+import { logout } from '../../api/auth/auth'
 import { useNavigate } from 'react-router-dom'
 
 const LogoutButton = () => {

@@ -4,6 +4,7 @@ const pool = require('../config/dbEntry')
 module.exports = {
     createBudget: async (req, res) => {
         const client = await pool.connect()
+        console.log('Incoming body:', req.body)
 
         try {
 
@@ -11,12 +12,16 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized' })
             }
 
-            const { category, limit } = req.body
+            let { category, amount_limit } = req.body
+            amount_limit = parseFloat(req.body.amount_limit)
             const userId = req.session.user.id
-            if (!category || !limit) {
-                return res.status(400).json({ message: 'Category and limit are required fields'})
+            if (!category || isNaN(amount_limit)) {
+                return res.status(400).json({ message: 'Category and valid numeric limit are required fields'})
             }
 
+            console.log('User ID:', userId)
+            console.log('Category:', category)
+            console.log('Amount Limit (parsed):', amount_limit)
             await client.query('BEGIN')
 
             const existingCategory = await pool.query('SELECT category FROM user_budgets WHERE user_id = $1 AND category = $2', [userId, category])
@@ -24,11 +29,12 @@ module.exports = {
                 await client.query('ROLLBACK')
                 return res.status(400).json({ message: 'Category already exists' })
             }
-
-            await client.query('INSERT INTO budget (user_id, category, amount_limit, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *', [userId, category, limit]);
+            console.log('Attempting insert into budget table...')
+            const insertResult = await client.query('INSERT INTO user_budgets (user_id, category, amount_limit, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *', [userId, category, amount_limit]);
 
             await client.query('COMMIT')
-            return res.status(200).json({ message: 'Budget successfully created', budget: {userId, category, limit} })
+            console.log('Insert Result:',insertResult.rows[0])
+            return res.status(200).json({ message: 'Budget successfully created', 'result':insertResult.rows[0] })
         } catch (error) {
             await client.query('ROLLBACK')
             return res.status(500).json({ message: 'Internal server error', error: error.message })
@@ -44,7 +50,7 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized' })
             }
 
-            const { category, limit, budgetId } = req.body
+            const { category, amount_limit, budgetId } = req.body
             const userId = req.session.user.id
 
             if (category === undefined && limit === undefined) {
@@ -70,7 +76,7 @@ module.exports = {
             WHERE budget_id = $3 AND user_id = $4 
             RETURNING *;
             `
-            const queryValues = [category || null, limit || null, budgetId, userId]
+            const queryValues = [category || null, amount_limit || null, budgetId, userId]
 
             const result = await client.query(updateQuery, queryValues)
             await client.query('COMMIT')
@@ -149,7 +155,7 @@ module.exports = {
                 await client.query('ROLLBACK');
                 return res.status(404).json({ message: 'Budget not found' })
             }
-            const limit = budgetResult.rows[0].amount_limit
+            const amount_limit = budgetResult.rows[0].amount_limit
 
             // Calculate total spending for the budget category
             const totalSpentQuery = 'SELECT COALESCE(SUM(amount), 0) AS total_spent FROM transactions WHERE user_id = $1 AND category = $2;'
@@ -158,12 +164,37 @@ module.exports = {
 
             await client.query('COMMIT')
 
-           return res.status(200).json({ category, limit, total_spent: totalSpent })
+           return res.status(200).json({ category, amount_limit, total_spent: totalSpent })
 
         } catch (error) {
             await client.query('ROLLBACK')
             console.error(error)
             return res.status(500).json({ message: 'Internal server error', error: error.message })
+        } finally {
+            client.release()
+        }
+    },
+    getAllBudgets: async (req, res) => {
+        const client = await pool.connect()
+
+        try {
+            if (!req.session.user) {
+                return res.status(401).json({message: 'User not authorized'})
+            }
+
+            const userId = req.session.user.id
+
+            await client.query('BEGIN')
+
+            const query = 'SELECT budget_id, category, amount_limit, created_at FROM user_budgets WHERE user_id = $1 ORDER BY created_at DESC'
+            const result = await client.query(query, [userId])
+
+            await client.query('COMMIT')
+            return res.status(200).json({ budgets: result.rows})
+        } catch (error) {
+            await client.query('ROLLBACK')
+            console.error(error)
+            return res.status(500).json({ message: 'Internal server error', error: error.message})
         } finally {
             client.release()
         }

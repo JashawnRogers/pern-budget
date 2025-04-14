@@ -3,10 +3,12 @@ import AuthForm from '../components/authPage/AuthForm'
 import Card from '../components/utils/Card'
 import authFormBG from '../assets/authform-bg.jpg'
 import { useLocation, useNavigate ,Link } from 'react-router-dom'
-import { login, register } from '../auth/auth'
+import { login, register } from '../api/auth/auth'
+import { useAuth } from '../api/auth/authContext'
 
 const AuthPage = () => {
   const [error, setError] = useState(null)
+  const { setUser } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const isRegistering = location.pathname === '/register'
@@ -15,11 +17,13 @@ const AuthPage = () => {
   const handleAuth = async (formData) => {
     try {
       setError(null)
+      let userData
       if (isRegistering) {
-        await register(formData)
+       userData = await register(formData)
       } else {
-        await login(formData)
+       userData = await login(formData)
       }
+      setUser(userData.user)
       navigate('/dashboard')
     } catch (error) {
       setError(error.message)

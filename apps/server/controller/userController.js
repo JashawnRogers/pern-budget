@@ -26,7 +26,7 @@ module.exports = {
         try {
             console.log('BODY:', req.body)
             const { email, password } = req.body
-            const query = 'SELECT user_id, email, password FROM users WHERE email = $1'
+            const query = 'SELECT user_id, email, name, password FROM users WHERE email = $1'
             const { rows } = await pool.query(query, [email])
             
             if (rows.length === 0) {
@@ -40,7 +40,7 @@ module.exports = {
                 return res.status(401).json({error: 'Incorrect password'})
             }
         
-            req.session.user = { id: user.user_id, email: user.email }
+            req.session.user = { id: user.user_id, email: user.email, name: user.name }
             console.log(req.session.user)
             res.status(202).json({message: 'User successfully logged in', user: req.session.user})
         } catch (error) {
