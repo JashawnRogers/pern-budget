@@ -160,11 +160,11 @@ module.exports = {
             // Calculate total spending for the budget category
             const totalSpentQuery = 'SELECT COALESCE(SUM(amount), 0) AS total_spent FROM transactions WHERE user_id = $1 AND category = $2;'
             const totalSpentResult = await client.query(totalSpentQuery, [userId, category])
-            const totalSpent = totalSpentResult.rows[0].total_spent
+            const total_spent = totalSpentResult.rows[0].total_spent
 
             await client.query('COMMIT')
 
-           return res.status(200).json({ category, amount_limit, total_spent: totalSpent })
+           return res.status(200).json({ category, amount_limit, total_spent: total_spent })
 
         } catch (error) {
             await client.query('ROLLBACK')
