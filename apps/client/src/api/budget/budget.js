@@ -38,3 +38,22 @@ export const getAllBudgets = async () => {
         throw new Error(error.message || 'Server failed to fetch budgets')
     }
 }
+
+export const deleteBudget = async (budget_id) => {
+    try {
+        const res = await fetch(`${BASE_URL}/delete/${budget_id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        })
+
+        if (!res.ok) {
+            const error = await res.json()
+            throw new Error(error.error || 'Failed to delete budget')
+        }
+
+        console.log('Successfully deleted budget:', budget_id)
+        return await res.json()
+    } catch (error) {
+        throw new Error(error.message || 'Server failed to delete budget')
+    }
+}

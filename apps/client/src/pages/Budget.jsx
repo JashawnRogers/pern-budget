@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from 'react'
 import { GoPlus } from 'react-icons/go'
 import Modal from '../components/utils/Modal'
 import Button from '../components/utils/Button'
-import { createBudget, getAllBudgets } from '../api/budget/budget'
+import { createBudget, getAllBudgets, deleteBudget } from '../api/budget/budget'
 import DataTable from '../components/utils/DataTable'
+import { MdDeleteForever } from 'react-icons/md'
 
 const Budget = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -16,6 +17,15 @@ const Budget = () => {
         { label: 'Name', accessor: 'category' },
         { label: 'Budget Limit', render: item => `$${item.amount_limit}` },
         { label: 'Date Created', render: item => item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-' },
+        { label: 'Delete', render: item => <button onClick={async () => {
+            const confirmed = window.confirm('Are you sure you want to delete this budget?')
+            if (confirmed) {
+               await deleteBudget(item.budget_id)
+               const updatedBudgets = await getAllBudgets()
+               setBudgets(updatedBudgets)
+            }
+        }} 
+        className='hover:cursor-pointer'><MdDeleteForever className='h-[30px] w-[30px]' /></button>}
       ]
 
     useEffect(() => {

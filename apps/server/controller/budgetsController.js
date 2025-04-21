@@ -90,17 +90,17 @@ module.exports = {
         }
     },
     deleteBudget: async (req, res) => {
-        const client = pool.connect()
+        const client = await pool.connect()
 
         try {
             if (!req.session.user) {
                 return res.status(401).json({ message: 'User not authorized' })
             }
 
-            const userId = req.session.user.id
-            const budgetId = parseInt(req.params.id, 10)
+            const user_id = req.session.user.id
+            const budget_id = parseInt(req.params.id, 10)
             
-            if (isNaN(budgetId)) {
+            if (isNaN(budget_id)) {
                 return res.status(404).json({ message: 'Invalid budget ID' })
             }
 
@@ -108,7 +108,7 @@ module.exports = {
 
             // Check if the budget exists before attempting to delete
             const checkQuery = 'SELECT * FROM user_budgets WHERE user_id = $1 AND budget_id = $2'
-            const checkResult = await client.query(checkQuery, [userId, budgetId])
+            const checkResult = await client.query(checkQuery, [user_id, budget_id])
 
             if (checkResult.rowCount === 0) {
                 await client.query('ROLLBACK')
@@ -116,7 +116,7 @@ module.exports = {
             }
 
             const deleteQuery = 'DELETE FROM user_budgets WHERE user_id = $1 AND budget_id = $2'
-            const { rowCount, rows } = await pool.query(deleteQuery, [userId, budgetId]) // rowCount indicates how many rows were affected
+            const { rowCount, rows } = await pool.query(deleteQuery, [user_id, budget_id]) // rowCount indicates how many rows were affected
 
             await client.query('COMMIT')
 
