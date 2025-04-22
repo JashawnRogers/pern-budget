@@ -26,11 +26,13 @@ const DashboardContent = () => {
             
 
             <Card className='lg:row-span-2'>
-                <div className='flex flex-col p-3'>
-                    <h2 className='text-xl montesserat-400'>Latest Transactions</h2>
-                    <p className='text-sm montesserat-300'>Transactions from this week</p>
-                    <p>Table of transactions</p>
-                </div>
+                <Link to='/transactions'>
+                    <div className='flex flex-col p-3'>
+                        <h2 className='text-xl montesserat-400'>Latest Transactions</h2>
+                        <p className='text-sm montesserat-300'>Transactions from this week</p>
+                        <p>Table of transactions</p>
+                    </div>
+                </Link>
             </Card>
    
             <Card>

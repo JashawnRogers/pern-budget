@@ -13,6 +13,7 @@ const Budget = () => {
     const categoryRef = useRef()
     const amountLimitRef = useRef()
 
+    // Total Spent column does not calculate total spent - likely comes back as undefined
     const columns = [
         { label: 'Name', accessor: 'category' },
         { label: 'Budget Limit', render: item => `$${item.amount_limit}` },

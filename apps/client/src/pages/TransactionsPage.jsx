@@ -158,6 +158,7 @@ const TransactionsPage = () => {
                 <Button type='submit' className='bg-[#528265]! text-white w-fit place-self-center my-5'>Create Transaction</Button>
             </form>
         </Modal>
+        {/* ADD TRANSACTIONS TABLE */}
     </>
   )
 }

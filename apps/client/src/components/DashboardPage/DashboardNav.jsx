@@ -11,10 +11,12 @@ const DashboardNav = () => {
 
   return (
     <nav className='flex justify-around bg-white'>
-        <div className='flex items-center'>
-            <img src={logo} className='w-[250px]' alt="SpendWise logo" />
-            <h1 className='ml-[-75px] montesserat-400 text-3xl'>SpendWise</h1>
-        </div>
+        <NavLink to='/dashboard'>
+            <div className='flex items-center'>
+                <img src={logo} className='w-[250px]' alt="SpendWise logo" />
+                <h1 className='ml-[-75px] montesserat-400 text-3xl'>SpendWise</h1>
+            </div>
+        </NavLink>
         <ul className='flex items-center gap-5 text-xl montesserat-300'>
             <li>
                 <NavLink to='/dashboard'>
