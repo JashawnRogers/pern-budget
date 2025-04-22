@@ -4,7 +4,8 @@ import AuthPage from '../pages/AuthPage'
 import DashboardPage from '../pages/DashboardPage'
 import { authLoader } from '../api/auth/authLoader'
 import Layout from '../components/Layout'
-import Budget from '../pages/Budget'
+import BudgetPage from '../pages/BudgetPage'
+import TransactionsPage from '../pages/TransactionsPage'
 
 // Public Routes (No Layout)
 const publicRoutes = [
@@ -25,7 +26,12 @@ const protectedRoutes = [
             },
             {
                 path: '/budget',
-                element: <Budget />,
+                element: <BudgetPage />,
+                loader: authLoader
+            },
+            {
+                path: '/transactions',
+                element: <TransactionsPage />,
                 loader: authLoader
             }
         ]

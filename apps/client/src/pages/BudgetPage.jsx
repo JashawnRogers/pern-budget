@@ -106,6 +106,7 @@ const Budget = () => {
                     <label htmlFor="max-amount" className='text-right'>Maximum Amount:</label>
                     <input 
                         type="number" 
+                        step='0.01'
                         ref={amountLimitRef}
                         required
                         className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'

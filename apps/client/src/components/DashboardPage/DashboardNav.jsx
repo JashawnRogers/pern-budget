@@ -27,7 +27,7 @@ const DashboardNav = () => {
                 </NavLink>
             </li>
             <li>
-                <NavLink>
+                <NavLink to='/transactions'>
                     <p>Transactions</p>
                 </NavLink>
             </li>

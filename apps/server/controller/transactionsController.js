@@ -9,9 +9,10 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized'})
             }
 
-            const { amount, type, category ,description, vendor, createdAt } = req.body
-            const userId = req.session.user.id
+            const { amount, type, category ,description, vendor, created_at } = req.body
+            const user_id = req.session.user.id
 
+            console.log('Request body:', req.body)
             if (!amount || !type || !category ) {
                 return res.status(400).json({ message: 'Amount, category and type are required fields' })
             }
@@ -19,14 +20,14 @@ module.exports = {
             // start pg transaction
             await client.query('BEGIN')
 
-            const existingCategory = await client.query('SELECT category FROM user_budgets WHERE user_id = $1 and category = $2', [userId, category])
+            const existingCategory = await client.query('SELECT category FROM user_budgets WHERE user_id = $1 and category = $2', [user_id, category])
 
             if (existingCategory.rowCount === 0) {
                 return res.status(404).json({ message: 'Category not found. Please create a new one or add to an existing category' })
             }
 
             const insertQuery = 'INSERT INTO transactions (user_id, amount, type, category, description, vendor, created_at) VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, NOW())) RETURNING *;'
-            const { rows } = await client.query(insertQuery, [userId, amount, type, category, description || null, vendor || null, createdAt || null])
+            const { rows } = await client.query(insertQuery, [user_id, amount, type, category, description || null, vendor || null, created_at || null])
 
             await client.query('COMMIT')
             res.status(201).json({ message: 'Transaction added successfully', transaction: rows[0] })
@@ -46,8 +47,8 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized' })
             }
 
-            const userId = req.session.user.id
-            const transactionId = req.params.id
+            const user_id = req.session.user.id
+            const transaction_id = req.params.id
 
             const { amount, type, category, description, vendor, createdAt } = req.body
 
@@ -76,8 +77,8 @@ module.exports = {
                 description || null,
                 vendor || null,
                 createdAt || null,
-                transactionId,
-                userId
+                transaction_id,
+                user_id
             ]
 
 
@@ -104,11 +105,11 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized' })
             }
 
-            const userId = req.session.user.id
-            const transactionId = req.params.id 
+            const user_id = req.session.user.id
+            const transaction_id = req.params.id 
 
             const query = 'DELETE FROM transactions WHERE id = $1 AND user_id = $2'
-            const { rowCount, rows } = await pool.query(query, [transactionId, userId]) // rowCount indicates how many rows were affected
+            const { rowCount, rows } = await pool.query(query, [transaction_id, user_id]) // rowCount indicates how many rows were affected
 
             if (rowCount === 0) {
                 return res.status(404).json({ message: 'Transaction not found' })
@@ -126,7 +127,7 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized' })
             }
 
-            const userId = req.session.user.id
+            const user_id = req.session.user.id
             let { page, limit } = req.query
             
             page = parseInt(page) || 1;
@@ -139,10 +140,10 @@ module.exports = {
                 ORDER BY created_at DESC
                 LIMIT $2 OFFSET $3;
             `
-            const { rows: transactions } = await pool.query(getTransactionsQuery, [userId, limit, offset])
+            const { rows: transactions } = await pool.query(getTransactionsQuery, [user_id, limit, offset])
             // Total transaction count
             const countQuery = 'SELECT COUNT(*) FROM transactions WHERE user_id = $1;' 
-            const { rows } = await pool.query(countQuery, [userId])
+            const { rows } = await pool.query(countQuery, [user_id])
             const totalTransactions = parseInt(rows[0].count)
 
             return res.status(200).json({
