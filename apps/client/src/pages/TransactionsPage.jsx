@@ -67,13 +67,50 @@ const TransactionsPage = () => {
             setCategory('')
             setDescription('')
             closeModal()
-            console.log('Succes:',data)
         } catch (error) {
-            console.log('Fail:',data)
-            setError(error.message || 'Something went wrong')
+            setError(error.message || "Something's acting up.. My bad")
         }
     }
 
+    const columns = [
+        {
+            label: 'Transaction Amount', 
+            accessor: 'amount', 
+            render: item => `$${item.amount}`
+        },
+        {
+            label: 'Type', 
+            accessor: 'type' 
+        },
+        {
+            label: 'Budget', 
+            accessor: 'category'
+        },
+        {
+            label: 'Vendor', 
+            accessor: 'vendor'
+        },
+        {
+            label: 'Date', 
+            accessor: 'created_at', 
+            render: item => item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-'
+        },
+        {
+            label: 'Description', 
+            accessor: 'description', 
+            render: item => item.description ? 
+            <textarea readOnly disabled defaultValue={item.description} className='border-none p-2 overflow-auto'></textarea>: 'N/A'
+        },
+        {label: 'Delete', render: item => <button onClick={async () => {
+            const confirmed = window.confirm('Are you sure you want to delete this budget?')
+            if (confirmed) {
+               await deleteBudget(item.budget_id)
+               const updatedBudgets = await getAllBudgets()
+               setBudgets(updatedBudgets)
+            }
+        }} 
+        className='hover:cursor-pointer'><MdDeleteForever className='h-[30px] w-[30px]' /></button>}
+    ]
 
 
   return (
@@ -87,6 +124,21 @@ const TransactionsPage = () => {
                     <Button className='cursor-pointer flex gap-x-2 text-3xl montesserat-300' onClick={openModal}>Create new transaction <GoPlus className='mt-1' /></Button>
                 </div>
             </div>
+        </div>
+        <div className='flex justify-center min-w-3/4 max-h-[30vh]'>
+            { transactions ? 
+                <DataTable 
+                    columns={columns}
+                    data={transactions}
+                    styleConfig={{
+                        header: 'bg-green-100 text-green-900',
+                        row: 'hover:bg-green-50',
+                        cell: 'text-sm',
+                        table: 'rounded-lg shadow-md'
+                    }}
+                /> : <p className='montesserat-300 text-xl text-center'>Transaction will appear here after they're created.</p>
+            
+            }
         </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
             <form onSubmit={handleCreateTransaction} method='post' className='grid items-center gap-4'>
@@ -158,7 +210,6 @@ const TransactionsPage = () => {
                 <Button type='submit' className='bg-[#528265]! text-white w-fit place-self-center my-5'>Create Transaction</Button>
             </form>
         </Modal>
-        {/* ADD TRANSACTIONS TABLE */}
     </>
   )
 }

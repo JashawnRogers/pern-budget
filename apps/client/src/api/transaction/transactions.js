@@ -13,6 +13,7 @@ export const getTransactions = async () => {
         }
 
         const data = await res.json()
+        console.log(data.transactions)
         return data.transactions
     } catch (error) {
         throw new Error(error.message || 'Server failed to fetch transactions')

@@ -67,12 +67,15 @@ const Budget = () => {
             closeModal()
             
         } catch (error) {
-            setError(error.message)
+            setError(error.message || "Something's acting up.. My bad")
         }
     }
 
   return (
     <>
+        {error && (
+            alert(error)
+        )}
         <div className='flex flex-col items-center gap-y-32 justify-center min-h-[60vh] static'>
             <div className='min-h-[30vh] content-center'>
                 <div className='flex gap-x-4'>

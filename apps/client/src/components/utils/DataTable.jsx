@@ -14,7 +14,7 @@ const DataTable = ({ columns, data, styleConfig = {} }) => {
             <thead className={`${header}`}>
               <tr>
                 {columns.map((col, idx) => (
-                  <th key={idx} className={`px-4 py-2 border-b ${cell}`}>
+                  <th key={idx} className={`px-4 py-2 border-b sticky top-0 bg-white z-10${cell}`}>
                     {col.label}
                   </th>
                 ))}
