@@ -1,11 +1,12 @@
 import {useState, useEffect, useRef} from 'react'
 import Modal from '../components/utils/Modal'
 import Button from '../components/utils/Button'
-import { createTransaction, getTransactions } from '../api/transaction/transactions'
+import { createTransaction, getTransactions, deleteTransaction } from '../api/transaction/transactions'
 import DataTable from '../components/utils/DataTable'
 import { MdDeleteForever } from 'react-icons/md'
 import { GoPlus } from 'react-icons/go'
 import { getAllBudgets } from '../api/budget/budget'
+
 
 const TransactionsPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -47,6 +48,17 @@ const TransactionsPage = () => {
         fetchAllBudgets()
         getAllTransactions()
     }, [])
+
+    useEffect(() => {
+        if (error) {
+          const timer = setTimeout(() => {
+            setError('')
+          }, 5000)
+    
+          return () => clearTimeout(timer)
+        }
+    
+      }, [error])
 
     const handleCreateTransaction = async (e) => {
         e.preventDefault()
@@ -104,21 +116,22 @@ const TransactionsPage = () => {
         {label: 'Delete', render: item => <button onClick={async () => {
             const confirmed = window.confirm('Are you sure you want to delete this budget?')
             if (confirmed) {
-               await deleteBudget(item.budget_id)
-               const updatedBudgets = await getAllBudgets()
-               setBudgets(updatedBudgets)
+               await deleteTransaction(item.transaction_id)
+               const updatedTransactions = await getTransactions()
+               setTransactions(updatedTransactions)
             }
         }} 
         className='hover:cursor-pointer'><MdDeleteForever className='h-[30px] w-[30px]' /></button>}
     ]
 
-
   return (
     <>
         {error && (
-            alert(error)
+            <div className="col-span-full bg-red-100 text-red-800 p-4 rounded-lg border border-red-300">
+                <strong>Error:</strong> {error}
+            </div>
         )}
-        <div className='flex flex-col items-center gapy-y-32 justify-center min-h-[60vh] static'>
+        <div className='flex flex-col items-center gapy-y-32 justify-center max-h-[40vh] static'>
             <div className='min-h-[30vh] content-center'>
                 <div className='flex gap-x-4'>
                     <Button className='cursor-pointer flex gap-x-2 text-3xl montesserat-300' onClick={openModal}>Create new transaction <GoPlus className='mt-1' /></Button>

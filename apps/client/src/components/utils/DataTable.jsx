@@ -23,7 +23,7 @@ const DataTable = ({ columns, data, styleConfig = {} }) => {
             <tbody>
               {data.length > 0 ? (
                 data.map((item, idx) => (
-                  <tr key={idx} className={`${row}`}>
+                  <tr key={idx} className={`${idx === data.length - 1 ? 'border-0' : ''} ${row}`}>
                     {columns.map((col, colIdx) => (
                       <td key={colIdx} className={`px-4 py-2 border-b ${cell}`}>
                         {col.render ? col.render(item) : item[col.accessor]}

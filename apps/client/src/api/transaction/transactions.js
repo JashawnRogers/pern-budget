@@ -13,7 +13,6 @@ export const getTransactions = async () => {
         }
 
         const data = await res.json()
-        console.log(data.transactions)
         return data.transactions
     } catch (error) {
         throw new Error(error.message || 'Server failed to fetch transactions')
@@ -37,5 +36,23 @@ export const createTransaction = async ({amount, type, category, description, ve
         return await res.json()
     } catch (error) {
         throw new Error(error.message || 'Server failed to create transaction')
+    }
+}
+
+export const deleteTransaction = async (transaction_id) => {
+    try {
+        const res = await fetch(`${BASE_URL}/delete/${transaction_id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        })
+
+        if (!res.ok) {
+            const error = await res.json()
+            throw new Error(error.error || 'Failed to delete transaction')
+        }
+
+        return await res.json()
+    } catch (error) {
+        throw new Error(error.message || 'Server failed to delete transaction')
     }
 }

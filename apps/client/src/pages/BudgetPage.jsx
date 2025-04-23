@@ -42,6 +42,16 @@ const Budget = () => {
         fetchAllBudgets()
     }, [])
 
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError('')
+            }, 5000)
+
+            return () => clearTimeout(timer)
+        }
+    }, [error])
+
     const openModal = () => {
         setIsModalOpen(true)
     }
@@ -74,7 +84,9 @@ const Budget = () => {
   return (
     <>
         {error && (
-            alert(error)
+            <div className="col-span-full bg-red-100 text-red-800 p-4 rounded-lg border border-red-300">
+                <strong>Error:</strong> {error}
+            </div>
         )}
         <div className='flex flex-col items-center gap-y-32 justify-center min-h-[60vh] static'>
             <div className='min-h-[30vh] content-center'>

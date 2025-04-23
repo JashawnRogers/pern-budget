@@ -10,7 +10,7 @@ export const login = async ({email, password}) => {
 
     if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.error || 'Login failed')
+        throw new Error(error.message || 'Login failed')
     }
 
     return res.json()
@@ -26,7 +26,7 @@ export const register = async ({name, email, password}) => {
 
     if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.error || 'Sign up failed')
+        throw new Error(error.message || 'Sign up failed')
     }
 
     return res.json()
@@ -40,7 +40,7 @@ export const logout = async () => {
 
     if (!res.ok) {
         const error = res.json()
-        throw new Error(error.error || 'Logout failed')
+        throw new Error(error.message || 'Logout failed')
     }
 
     return res.json()
@@ -54,7 +54,7 @@ export const getSession = async () => {
 
     if (!res.ok) {
         const error = await res.json()
-        throw new Error(error.error || 'Session check failed')
+        throw new Error(error.message || 'Session check failed')
     }
 
     return res.json()
