@@ -163,7 +163,7 @@ module.exports = {
             const total_spent = totalSpentResult.rows[0].total_spent
 
             await client.query('COMMIT')
-
+            console.log(total_spent)
            return res.status(200).json({ category, amount_limit, total_spent: total_spent })
 
         } catch (error) {
@@ -186,11 +186,32 @@ module.exports = {
 
             await client.query('BEGIN')
 
-            const query = 'SELECT budget_id, category, amount_limit, created_at FROM user_budgets WHERE user_id = $1 ORDER BY created_at DESC'
-            const result = await client.query(query, [userId])
+            const query = `
+            SELECT budget_id, category, amount_limit, created_at 
+            FROM user_budgets 
+            WHERE user_id = $1 ORDER BY created_at DESC
+            `
+            const budgetResult = await client.query(query, [userId])
+            const budgets = budgetResult.rows
+            
+            // Loop through budgets and get total spent per category
+            const enrichedBudgets = await Promise.all( budgets.map( async (budget) => {
+                const spendQuery = `
+                SELECT COALESCE(SUM(amount), 0) AS total_spent
+                FROM transactions
+                WHERE user_id = $1 AND category = $2
+                `
+                const spendResult = await client.query(spendQuery, [userId, budget.category])
+                const total_spent = spendResult.rows[0].total_spent
+
+                return {
+                    ...budget,
+                    total_spent: parseFloat(total_spent)
+                }
+            }))
 
             await client.query('COMMIT')
-            return res.status(200).json({ budgets: result.rows})
+            return res.status(200).json({ budgets: enrichedBudgets})
         } catch (error) {
             await client.query('ROLLBACK')
             console.error(error)

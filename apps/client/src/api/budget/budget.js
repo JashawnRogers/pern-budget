@@ -33,6 +33,7 @@ export const getAllBudgets = async () => {
         }
 
         const data = await res.json()
+        console.log('Inserted budget:',data.budgets)
         return data.budgets
     } catch (error) {
         throw new Error(error.message || 'Server failed to fetch budgets')
