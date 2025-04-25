@@ -38,12 +38,13 @@ const DashboardContent = () => {
             render: item => `$${item.amount}`
         },
         {
-            label: 'Type', 
-            accessor: 'type' 
-        },
-        {
             label: 'Budget', 
             accessor: 'category'
+        }, 
+        {
+            label: 'Date', 
+            accessor: 'created_at', 
+            render: item => item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-'
         }
     ]
 
@@ -78,9 +79,8 @@ const DashboardContent = () => {
             <Card className='lg:row-span-3 flex flex-col h-full'>
                 <Link to='/transactions' className='block h-full'>
                     <div className='flex flex-col p-3 h-full'>
-                        <h2 className='text-xl montesserat-400'>Latest Transactions</h2>
-                        <p className='text-sm montesserat-300'>Transactions from this week</p>
-                        <div className='flex-grow overflow-auto rounded-lg'>
+                        <h2 className='text-xl montesserat-400 m-2 text-center'>Latest Transactions</h2>
+                        <div className='flex-grow overflow-auto rounded-lg mt-5'>
                             <DataTable 
                                 columns={columns}
                                 data={transactions}
