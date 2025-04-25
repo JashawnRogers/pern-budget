@@ -20,7 +20,7 @@ module.exports = {
             // start pg transaction
             await client.query('BEGIN')
 
-            const existingCategory = await client.query('SELECT category FROM user_budgets WHERE user_id = $1 and category = $2', [user_id, category])
+            const existingCategory = await client.query('SELECT category FROM user_budgets WHERE user_id = $1 AND category = $2', [user_id, category])
 
             if (existingCategory.rowCount === 0) {
                 return res.status(404).json({ message: 'Category not found. Please create a new one or add to an existing category' })

@@ -116,7 +116,8 @@ const TransactionsPage = () => {
         {label: 'Delete', render: item => <button onClick={async () => {
             const confirmed = window.confirm('Are you sure you want to delete this budget?')
             if (confirmed) {
-               await deleteTransaction(item.transaction_id)
+               await deleteTransaction(item.transaction.id)
+               console.log('Successfully deleted transaction:', item.transaction)
                const updatedTransactions = await getTransactions()
                setTransactions(updatedTransactions)
             }

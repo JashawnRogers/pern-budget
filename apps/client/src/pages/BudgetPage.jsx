@@ -17,7 +17,14 @@ const Budget = () => {
     const columns = [
         { label: 'Name', accessor: 'category' },
         { label: 'Budget Limit', render: item => `$${item.amount_limit}` },
-        { label: 'Total Spent', render: item => item.total_spent ? `$${item.total_spent}`: '$0' },
+        { label: 'Total Spent', render: item => (
+            <span>
+                <span>$</span>
+                 <span className={item.total_spent < item.amount_limit ? 'text-green-500' : 'text-red-500'}>
+                    {item.total_spent}
+                </span>
+            </span>
+        ) },
         { label: 'Date Created', render: item => item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-' },
         { label: 'Delete', render: item => <button onClick={async () => {
             const confirmed = window.confirm('Are you sure you want to delete this budget?')
