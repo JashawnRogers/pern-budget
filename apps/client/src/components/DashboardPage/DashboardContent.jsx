@@ -1,12 +1,35 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Card from '../utils/Card'
 import { Link } from 'react-router-dom'
 import { getTransactions } from '../../api/transaction/transactions'
+import { getAllBudgets } from '../../api/budget/budget'
+import { updateMonthlyIncome, getMonthlyIncome } from '../../api/user/user'
 import DataTable from '../utils/DataTable'
+import Button from '../utils/Button'
 
 const DashboardContent = () => {
+    const monthly_incomeRef = useRef()
     const [transactions, setTransactions] = useState([])
+    const [transactionTotal, setTransactionTotal] = useState(0)
+    const [budgets, setBudgets] = useState([])
+    const [monthlyIncomeUI, setMonthlyIncomeUI] = useState(0)
     const [error, setError] = useState('')
+
+    const handleMonthlyIncome = async (e) => {
+        e.preventDefault()
+
+        const monthly_income = monthly_incomeRef.current.value
+        const parsedIncome = parseFloat(monthly_income)
+        const data = {monthly_income: parsedIncome}
+        try {
+            setError(null)
+            await updateMonthlyIncome(data)
+            setMonthlyIncomeUI(data)
+            monthly_incomeRef.current.value = ''
+        } catch (error) {
+            setError(error.message)
+        }
+    }
 
     useEffect(() => {
         const getAllTransactions = async () => {
@@ -18,6 +41,26 @@ const DashboardContent = () => {
             }
         }
 
+        const getBudgets = async () => {
+            try {
+                const data = await getAllBudgets()
+                setBudgets(data)
+            } catch (error) {
+                setError(error.message)
+            }
+        }
+
+        const getIncome = async () => {
+            try {
+                const data = await getMonthlyIncome()
+                setMonthlyIncomeUI(data)
+            } catch (error) {
+                setError(error.message)
+            }
+        }
+
+        getIncome()
+        getBudgets()
         getAllTransactions()
     }, [])
 
@@ -30,6 +73,17 @@ const DashboardContent = () => {
         }
 
     }, [error])
+
+    useEffect(() => {
+        if (transactions.length > 0) {
+            const total = transactions.reduce((acc, transaction) => {
+                return acc + parseFloat(transaction.amount)
+            }, 0)
+            setTransactionTotal(total)
+        } else {
+            setTransactionTotal(0)
+        }
+    }, [transactions])
 
     const columns = [
         {
@@ -58,9 +112,24 @@ const DashboardContent = () => {
         )}
             <Card>
                 <div className='flex flex-col p-3'>
-                    <h2 className='text-xl montesserat-400'>Your balance</h2>
+                    <div className='flex gap-x-6 w-full justify-between'>
+                    <h2 className='text-xl montesserat-400'>Balance</h2> 
+                    <h2 className='text-base montesserat-400 p-1'>Monthly Income: ${monthlyIncomeUI.toFixed(2)}</h2>
+                    </div>
                     <p className='text-sm montesserat-300'>Today, Apr 5</p>
-                    <h3 className='text-6xl montesserat-400 mt-16'>$10,000</h3>
+                    <h3 className='text-6xl montesserat-400 mt-16 mx-auto'>{monthlyIncomeUI ? `$${(monthlyIncomeUI - transactionTotal).toFixed(2)}` : <p className='text-lg'>Please enter a monthly income to see your balance.</p>}</h3>
+                    <form onSubmit={handleMonthlyIncome} method="put">
+                        <label htmlFor="monthlyIncome">{monthlyIncomeUI ? 'Update Monthly Income:' :'Monthly Income:'}</label>
+                        <input 
+                            ref={monthly_incomeRef}
+                            type='number'
+                            step='0.01'
+                            required
+                            className='outline outline-black outline-solid ml-3 mt-10 rounded-3xl h-[40px] w-[150px] p-3'
+                        />
+
+                        <Button type='submit' className='bg-[#528265]! text-white w-fit ml-6'>Enter</Button>
+                    </form>
                 </div>
             </Card>
 
@@ -94,23 +163,21 @@ const DashboardContent = () => {
                         </div>
                     </div>
                 </Link>
-            </Card>
-   
+            </Card>   
             <Card>
                 <div className='flex flex-col p-3'>
                     <h2 className='text-xl montesserat-400'>Expenses</h2>
                     <p className='text-sm montesserat-300'>Total expenses for this month</p>
-                    <h3 className='text-3xl montesserat-400 mt-16'>$10,000</h3>
+                    <h3 className='text-3xl montesserat-400 mt-16'>${transactionTotal.toFixed(2)}</h3>
                 </div>
             </Card>
-            <Card>
+            <Card className='row-span-2'>
                 <div className='flex flex-col p-3'>
-                    <h2 className='text-xl montesserat-400'>Income</h2>
-                    <p className='text-sm montesserat-300'>Total Income for this month</p>
-                    <h3 className='text-3xl montesserat-400 mt-16'>$10,000</h3>
+                    <h2 className='text-xl montesserat-400'>Savings Goals</h2>
+                    <p className='text-sm montesserat-300'></p>
                 </div>
             </Card>
-            <Card className='lg:col-span-2'>
+            <Card className=''>
                 <div className='flex flex-col p-3'>
                     <h2 className='text-xl montesserat-400'>Reports</h2>
                     <p className='text-sm montesserat-300'>Total budget for this month</p>

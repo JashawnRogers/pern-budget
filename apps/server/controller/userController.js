@@ -85,6 +85,56 @@ module.exports = {
             res.status(500).json({message: 'Internal server error', error: error.message})
         }
     },
+    getMonthlyIncome: async (req, res) => {
+        try {
+            if (!req.session.user) {
+                return res.status(401).json({ message: 'User not authorized' })
+            }
+
+            const user_id = req.session.user.id
+            const query = `
+                SELECT monthly_income
+                FROM users
+                WHERE user_id = $1
+            `
+
+            const result =  await pool.query(query, [user_id])
+            const monthly_income = result.rows[0]?.monthly_income
+
+            return res.status(200).json({message: 'Succesfully fetched monthly income!', monthly_income: monthly_income})            
+        } catch (error) {
+            console.error(error)
+            return res.status(500).json({message: 'Internal server error:', error: error.message})
+        }
+    }   
+    ,
+    updateMonthlyIncome: async (req,res) => {
+        try {
+            if (!req.session.user) {
+                return res.status(401).json({ message: 'User not authorized' })
+            }
+
+            const user_id = req.session.user.id
+            const monthly_income = parseFloat(req.body.monthly_income)
+
+            if (isNaN(monthly_income)) {
+                return res.status(400).json({message: 'Monthly Income must be a number'})
+            }
+
+            const query = `
+            UPDATE users
+            SET monthly_income = $1
+            WHERE user_id = $2
+            `
+
+            await pool.query(query, [monthly_income, user_id])
+
+            res.status(200).json({message: 'Monthly income successfully updated!', monthly_income: monthly_income})
+        } catch (error) {
+            console.error(error)
+            res.status(500).json({message: 'Internal server error', error: error.message})
+        }
+    },
     getSession: async (req, res) => {
         try {
             if (req.session?.user) {

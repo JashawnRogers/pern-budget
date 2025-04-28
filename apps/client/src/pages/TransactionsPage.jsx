@@ -14,7 +14,6 @@ const TransactionsPage = () => {
     const [transactions, setTransactions] = useState([])
     const [category, setCategory] = useState('')
     const [description, setDescription] = useState('')
-    const [type, setType] = useState('')
     const [budgets, setBudgets] = useState([])
     const vendorRef = useRef()
     const amountRef = useRef()
@@ -66,7 +65,7 @@ const TransactionsPage = () => {
         const vendor = vendorRef.current.value
         const created_at = createdAtRef.current.value
 
-        const data = {amount, type, category, description, vendor, created_at}
+        const data = {amount, category, description, vendor, created_at}
 
         try {
             setError(null)
@@ -75,7 +74,6 @@ const TransactionsPage = () => {
             setTransactions(newTransactions)
             amountRef.current.value = ''
             vendorRef.current.value = ''
-            setType('')
             setCategory('')
             setDescription('')
             closeModal()
@@ -89,10 +87,6 @@ const TransactionsPage = () => {
             label: 'Transaction Amount', 
             accessor: 'amount', 
             render: item => `$${item.amount}`
-        },
-        {
-            label: 'Type', 
-            accessor: 'type' 
         },
         {
             label: 'Budget', 
@@ -166,21 +160,6 @@ const TransactionsPage = () => {
                         required
                         className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] p-3'
                     />
-                </div>
-                <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
-                    <label htmlFor='type'>Type:</label>
-                    <select 
-                        id='type' 
-                        value={type} 
-                        required
-                        className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3' 
-                        onChange={(e) => setType(e.target.value)}
-                    >
-
-                    <option value=''>Select an option</option>
-                        <option value='debit'>Debit</option>
-                        <option value='credit'>Credit</option>
-                    </select>
                 </div>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
                     <label htmlFor='category'>Budget Category:</label>

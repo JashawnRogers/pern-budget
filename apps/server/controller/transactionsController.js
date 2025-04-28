@@ -9,12 +9,12 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized'})
             }
 
-            const { amount, type, category ,description, vendor, created_at } = req.body
+            const { amount, category ,description, created_at } = req.body
             const user_id = req.session.user.id
 
             console.log('Request body:', req.body)
-            if (!amount || !type || !category ) {
-                return res.status(400).json({ message: 'Amount, category and type are required fields' })
+            if (!amount || !category ) {
+                return res.status(400).json({ message: 'Amount and category are required fields' })
             }
 
             // start pg transaction
@@ -26,8 +26,8 @@ module.exports = {
                 return res.status(404).json({ message: 'Category not found. Please create a new one or add to an existing category' })
             }
 
-            const insertQuery = 'INSERT INTO transactions (user_id, amount, type, category, description, vendor, created_at) VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, NOW())) RETURNING *;'
-            const { rows } = await client.query(insertQuery, [user_id, amount, type, category, description || null, vendor || null, created_at || null])
+            const insertQuery = 'INSERT INTO transactions (user_id, amount, category, description, vendor, created_at) VALUES ($1, $2, $3, $4, $5, COALESCE($6, NOW())) RETURNING *;'
+            const { rows } = await client.query(insertQuery, [user_id, amount, category, description || null, vendor || null, created_at || null])
 
             await client.query('COMMIT')
             res.status(201).json({ message: 'Transaction added successfully', transaction: rows[0] })
@@ -50,9 +50,9 @@ module.exports = {
             const user_id = req.session.user.id
             const transaction_id = req.params.id
 
-            const { amount, type, category, description, vendor, createdAt } = req.body
+            const { amount, category, description, vendor, createdAt } = req.body
 
-            if (amount === undefined && type === undefined && category === undefined && description === undefined && vendor === undefined) {
+            if (amount === undefined && category === undefined && description === undefined && vendor === undefined) {
                 return res.status(400).json({ error: 'No valid fields provided for update' })
             }
 
@@ -60,19 +60,17 @@ module.exports = {
             const updateQuery = `
             UPDATE transactions 
             SET 
-                amount = COALESCE($1, amount), 
-                type = COALESCE($2, type), 
-                category = COALESCE($3, category), 
-                description = COALESCE($4, description), 
-                vendor = COALESCE($5, vendor),
-                created_at = COALESCE($6, created_at),
-            WHERE id = $7 AND user_id = $8 
+                amount = COALESCE($1, amount),  
+                category = COALESCE($2, category), 
+                description = COALESCE($3, description), 
+                vendor = COALESCE($4, vendor),
+                created_at = COALESCE($5, created_at),
+            WHERE id = $6 AND user_id = $7 
             RETURNING *, user_id;
             `
             // If amount is undefined, null is used and COALESCE will keep the existing value
             const queryValues = [
                 amount || null,
-                type || null,
                 category || null,
                 description || null,
                 vendor || null,

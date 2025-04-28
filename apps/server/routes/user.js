@@ -8,6 +8,9 @@ router.post('/login', userController.logIn)
 router.delete('/delete/:id', userController.deleteUser)
 router.get('/logout', userController.logout)
 router.get('/session', userController.getSession)
+router.get('/income', userController.getMonthlyIncome)
+router.put('/income/update', userController.updateMonthlyIncome)
+
 
 
 module.exports = router
