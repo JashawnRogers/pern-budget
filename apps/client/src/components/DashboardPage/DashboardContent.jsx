@@ -6,12 +6,14 @@ import { getAllBudgets } from '../../api/budget/budget'
 import { updateMonthlyIncome, getMonthlyIncome } from '../../api/user/user'
 import DataTable from '../utils/DataTable'
 import Button from '../utils/Button'
+import { getDate } from '../utils/getDate'
 
 const DashboardContent = () => {
     const monthly_incomeRef = useRef()
     const [transactions, setTransactions] = useState([])
     const [transactionTotal, setTransactionTotal] = useState(0)
     const [budgets, setBudgets] = useState([])
+    const [budgetTotal, setBudgetTotal] = useState(0)
     const [monthlyIncomeUI, setMonthlyIncomeUI] = useState(0)
     const [error, setError] = useState('')
 
@@ -24,7 +26,7 @@ const DashboardContent = () => {
         try {
             setError(null)
             await updateMonthlyIncome(data)
-            setMonthlyIncomeUI(data)
+            setMonthlyIncomeUI(parsedIncome)
             monthly_incomeRef.current.value = ''
         } catch (error) {
             setError(error.message)
@@ -85,6 +87,17 @@ const DashboardContent = () => {
         }
     }, [transactions])
 
+    useEffect(() => {
+        if (budgets.length > 0) {
+            const total = budgets.reduce((acc, budget) => {
+                return acc + parseFloat(budget.amount_limit)
+            }, 0)
+            setBudgetTotal(total)
+        } else {
+            setBudgetTotal(0)
+        }
+    }, [budgets])
+
     const columns = [
         {
             label: 'Transaction Amount', 
@@ -116,8 +129,8 @@ const DashboardContent = () => {
                     <h2 className='text-xl montesserat-400'>Balance</h2> 
                     <h2 className='text-base montesserat-400 p-1'>Monthly Income: ${monthlyIncomeUI.toFixed(2)}</h2>
                     </div>
-                    <p className='text-sm montesserat-300'>Today, Apr 5</p>
-                    <h3 className='text-6xl montesserat-400 mt-16 mx-auto'>{monthlyIncomeUI ? `$${(monthlyIncomeUI - transactionTotal).toFixed(2)}` : <p className='text-lg'>Please enter a monthly income to see your balance.</p>}</h3>
+                    <p className='text-sm montesserat-300'>{getDate()}</p>
+                    <h3 className='text-6xl montesserat-400 mt-12 mx-auto'>{monthlyIncomeUI ? `$${(monthlyIncomeUI - transactionTotal).toFixed(2)}` : <p className='text-lg'>Please enter a monthly income to see your balance.</p>}</h3>
                     <form onSubmit={handleMonthlyIncome} method="put">
                         <label htmlFor="monthlyIncome">{monthlyIncomeUI ? 'Update Monthly Income:' :'Monthly Income:'}</label>
                         <input 
@@ -138,8 +151,8 @@ const DashboardContent = () => {
                 <Link to='/budget'>
                     <div className='flex flex-col p-3'>
                         <h2 className='text-xl montesserat-400'>Budget</h2>
-                        <p className='text-sm montesserat-300'>Total budget for this month</p>
-                        <h3 className='text-6xl montesserat-400 mt-16'>$10,000</h3>
+                        <p className='text-sm montesserat-300'>Total amount budgeted</p>
+                        <h3 className='text-6xl montesserat-400 mt-16 mx-auto'>${budgetTotal.toFixed(2)}</h3>
                     </div>
                 </Link>
             </Card>
@@ -167,8 +180,8 @@ const DashboardContent = () => {
             <Card>
                 <div className='flex flex-col p-3'>
                     <h2 className='text-xl montesserat-400'>Expenses</h2>
-                    <p className='text-sm montesserat-300'>Total expenses for this month</p>
-                    <h3 className='text-3xl montesserat-400 mt-16'>${transactionTotal.toFixed(2)}</h3>
+                    <p className='text-sm montesserat-300'>Total expenses</p>
+                    <h2 className='text-5xl montesserat-400 mt-16 mx-auto'>${transactionTotal.toFixed(2)}</h2>
                 </div>
             </Card>
             <Card className='row-span-2'>
