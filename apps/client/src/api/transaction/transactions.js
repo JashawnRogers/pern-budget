@@ -32,8 +32,10 @@ export const createTransaction = async ({amount, type, category, description, ve
             const error = await res.json()
             throw new Error(error.message || 'Failed to create transaction')
         }
-        console.log(await res.json())
-        return await res.json()
+
+        const data = await res.json()
+        console.log(data)
+        return data
     } catch (error) {
         throw new Error(error.message || 'Server failed to create transaction')
     }

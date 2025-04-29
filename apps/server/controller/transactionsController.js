@@ -9,7 +9,7 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized'})
             }
 
-            const { amount, category ,description, created_at } = req.body
+            const { amount, category ,description, vendor ,created_at } = req.body
             const user_id = req.session.user.id
 
             console.log('Request body:', req.body)

@@ -110,7 +110,7 @@ const TransactionsPage = () => {
         {label: 'Delete', render: item => <button onClick={async () => {
             const confirmed = window.confirm('Are you sure you want to delete this budget?')
             if (confirmed) {
-               await deleteTransaction(item.transaction.id)
+               await deleteTransaction(item.id)
                console.log('Successfully deleted transaction:', item.transaction)
                const updatedTransactions = await getTransactions()
                setTransactions(updatedTransactions)
@@ -133,7 +133,7 @@ const TransactionsPage = () => {
                 </div>
             </div>
         </div>
-        <div className='flex justify-center min-w-3/4 max-h-[30vh]'>
+        <div className='flex justify-center min-w-3/4 max-h-[55vh]'>
             { transactions ? 
                 <DataTable 
                     columns={columns}
