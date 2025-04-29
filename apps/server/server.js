@@ -6,6 +6,7 @@ const pool = require('./config/dbEntry')
 const userRoute = require('./routes/user')
 const transactionsRoute = require('./routes/transactions')
 const budgetsRoute = require('./routes/budgets')
+const savingsGoalsRoute = require('./controller/savingsController')
 require('dotenv').config()
 
 const app = express()
@@ -37,7 +38,7 @@ app.use(session({
 app.use('/api/user', userRoute)
 app.use('/api/transactions', transactionsRoute)
 app.use('/api/budget', budgetsRoute)
-
+app.use('/api/savings', savingsGoalsRoute)
 
 app.listen(8001, () => {
     console.log('Server is listening on port 8001')

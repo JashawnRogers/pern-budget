@@ -1,0 +1,1 @@
+ALTER TABLE savings RENAME COLUMN id TO savings_id;

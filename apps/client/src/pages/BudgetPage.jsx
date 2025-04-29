@@ -101,7 +101,7 @@ const Budget = () => {
                     <Button className='cursor-pointer flex gap-x-2 text-3xl montesserat-300' onClick={openModal}>Create new budget category <GoPlus className='mt-1'/></Button>
                 </div>
             </div>
-            <div className='min-w-1/2 min-h-[30vh]'>
+            <div className='min-w-1/2 min-h-[55vh]'>
                 {budgets ? <DataTable 
                     columns={columns}
                     data={budgets}

@@ -4,7 +4,6 @@ const pool = require('../config/dbEntry')
 module.exports = {
     createBudget: async (req, res) => {
         const client = await pool.connect()
-        console.log('Incoming body:', req.body)
 
         try {
 
@@ -19,9 +18,6 @@ module.exports = {
                 return res.status(400).json({ message: 'Category and valid numeric limit are required fields'})
             }
 
-            console.log('User ID:', userId)
-            console.log('Category:', category)
-            console.log('Amount Limit (parsed):', amount_limit)
             await client.query('BEGIN')
 
             const existingCategory = await pool.query('SELECT category FROM user_budgets WHERE user_id = $1 AND category = $2', [userId, category])
@@ -29,7 +25,7 @@ module.exports = {
                 await client.query('ROLLBACK')
                 return res.status(400).json({ message: 'Category already exists' })
             }
-            console.log('Attempting insert into budget table...')
+    
             const insertResult = await client.query('INSERT INTO user_budgets (user_id, category, amount_limit, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *', [userId, category, amount_limit]);
 
             await client.query('COMMIT')
@@ -163,8 +159,7 @@ module.exports = {
             const total_spent = totalSpentResult.rows[0].total_spent
 
             await client.query('COMMIT')
-            console.log(total_spent)
-           return res.status(200).json({ category, amount_limit, total_spent: total_spent })
+            return res.status(200).json({ category, amount_limit, total_spent: total_spent })
 
         } catch (error) {
             await client.query('ROLLBACK')
@@ -214,7 +209,6 @@ module.exports = {
             return res.status(200).json({ budgets: enrichedBudgets})
         } catch (error) {
             await client.query('ROLLBACK')
-            console.error(error)
             return res.status(500).json({ message: 'Internal server error', error: error.message})
         } finally {
             client.release()
