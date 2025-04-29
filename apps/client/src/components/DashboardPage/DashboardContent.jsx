@@ -130,7 +130,7 @@ const DashboardContent = () => {
                     <h2 className='text-base montesserat-400 p-1'>Monthly Income: ${monthlyIncomeUI.toFixed(2)}</h2>
                     </div>
                     <p className='text-sm montesserat-300'>{getDate()}</p>
-                    <h3 className='text-6xl montesserat-400 mt-12 mx-auto'>{monthlyIncomeUI ? `$${(monthlyIncomeUI - transactionTotal).toFixed(2)}` : <p className='text-lg'>Please enter a monthly income to see your balance.</p>}</h3>
+                    <h3 className='text-6xl montesserat-400 mt-10 mx-auto'>{monthlyIncomeUI ? `$${(monthlyIncomeUI - transactionTotal).toFixed(2)}` : <p className='text-lg'>Please enter a monthly income to see your balance.</p>}</h3>
                     <form onSubmit={handleMonthlyIncome} method="put">
                         <label htmlFor="monthlyIncome">{monthlyIncomeUI ? 'Update Monthly Income:' :'Monthly Income:'}</label>
                         <input 
@@ -181,7 +181,7 @@ const DashboardContent = () => {
                 <div className='flex flex-col p-3'>
                     <h2 className='text-xl montesserat-400'>Expenses</h2>
                     <p className='text-sm montesserat-300'>Total expenses</p>
-                    <h2 className='text-5xl montesserat-400 mt-16 mx-auto'>${transactionTotal.toFixed(2)}</h2>
+                    <h2 className='text-5xl montesserat-400 mt-10 mx-auto'>${transactionTotal.toFixed(2)}</h2>
                 </div>
             </Card>
             <Card className='row-span-2'>

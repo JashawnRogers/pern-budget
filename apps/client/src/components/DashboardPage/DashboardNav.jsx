@@ -34,8 +34,8 @@ const DashboardNav = () => {
                 </NavLink>
             </li>
             <li>
-                <NavLink>
-                    <p>Reports</p>
+                <NavLink to='/savings'>
+                    <p>Savings Goals</p>
                 </NavLink>
             </li>
         </ul>

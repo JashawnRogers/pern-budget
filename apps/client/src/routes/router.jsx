@@ -6,6 +6,7 @@ import { authLoader } from '../api/auth/authLoader'
 import Layout from '../components/Layout'
 import BudgetPage from '../pages/BudgetPage'
 import TransactionsPage from '../pages/TransactionsPage'
+import SavingsPage from '../pages/SavingsPage'
 
 // Public Routes (No Layout)
 const publicRoutes = [
@@ -32,6 +33,11 @@ const protectedRoutes = [
             {
                 path: '/transactions',
                 element: <TransactionsPage />,
+                loader: authLoader
+            },
+            {
+                path: '/savings',
+                element: <SavingsPage />,
                 loader: authLoader
             }
         ]

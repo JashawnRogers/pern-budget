@@ -20,7 +20,7 @@ const Budget = () => {
         { label: 'Total Spent', render: item => (
             <span>
                 <span>$</span>
-                 <span className={item.total_spent < item.amount_limit ? 'text-green-500' : 'text-red-500'}>
+                 <span className={item.total_spent > item.amount_limit && 'text-red-500'}>
                     {item.total_spent}
                 </span>
             </span>
