@@ -6,7 +6,7 @@ const pool = require('./config/dbEntry')
 const userRoute = require('./routes/user')
 const transactionsRoute = require('./routes/transactions')
 const budgetsRoute = require('./routes/budgets')
-const savingsGoalsRoute = require('./controller/savingsController')
+const savingsGoalsRoute = require('./routes/savings')
 require('dotenv').config()
 
 const app = express()
@@ -34,7 +34,6 @@ app.use(session({
     },
 }))
 // ROUTES
-// Whatever code is stored in userRoute will be accessable through the /user endpoint
 app.use('/api/user', userRoute)
 app.use('/api/transactions', transactionsRoute)
 app.use('/api/budget', budgetsRoute)
