@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt')
 module.exports = {
     signUp : async (req, res) => {
         try {
-            console.log('BODY:', req.body)
             const { name, email, password } = req.body
             const hashedPassword = await bcrypt.hash(password, 10)
             const query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *'
@@ -24,7 +23,6 @@ module.exports = {
     },
     logIn: async (req, res) => {
         try {
-            console.log('BODY:', req.body)
             const { email, password } = req.body
             const query = 'SELECT user_id, email, name, password FROM users WHERE email = $1'
             const { rows } = await pool.query(query, [email])

@@ -1,12 +1,12 @@
 const BASE_URL = 'http://localhost:8001/api/savings'
 
-export const createSavingsGoal = async ({ title, target_amount }) => {
+export const createSavingsGoal = async ({ title, target_amount, current_amount }) => {
     try {
         const res = await fetch(`${BASE_URL}/create`, {
             method: 'POST',
             credentials: 'include',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ title, target_amount })
+            body: JSON.stringify({ title, target_amount, current_amount })
         })
 
         if (!res.ok) {
@@ -20,13 +20,13 @@ export const createSavingsGoal = async ({ title, target_amount }) => {
     }
 }
 
-export const updateSavingsGoal = async ({ title, target_amount, savings_id, add_to_current_amount }) => {
+export const updateSavingsGoal = async ({ title, target_amount, savings_id, current_amount }) => {
     try {
         const res = await fetch(`${BASE_URL}/update`, {
             method: 'PUT',
             credentials: 'include',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ title, target_amount, savings_id, add_to_current_amount })
+            body: JSON.stringify({ title, target_amount, savings_id, current_amount })
         })
 
         if (!res.ok) {
@@ -40,7 +40,7 @@ export const updateSavingsGoal = async ({ title, target_amount, savings_id, add_
     }
 }
 
-export const deleteSavingsGoal = async ({ savings_id }) => {
+export const deleteSavingsGoal = async (savings_id) => {
     try {
         const res = await fetch(`${BASE_URL}/delete/${savings_id}`, {
             method: 'DELETE',

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DataTable = ({ columns, data, styleConfig = {} }) => {
+const DataTable = ({ columns, data, styleConfig = {}, onRowClick }) => {
     const {
         table = '',
         header = '',
@@ -23,7 +23,7 @@ const DataTable = ({ columns, data, styleConfig = {} }) => {
             <tbody>
               {data.length > 0 ? (
                 data.map((item, idx) => (
-                  <tr key={idx} className={`${idx === data.length - 1 ? 'border-0' : ''} ${idx % 2 === 1 ? 'bg-white' : 'bg-gray-200'} ${row}`}>
+                  <tr key={idx} onClick={() => onRowClick(item)} className={`${idx === data.length - 1 ? 'border-0' : ''} ${idx % 2 === 1 ? 'bg-white' : 'bg-gray-200'} ${row}`}>
                     {columns.map((col, colIdx) => (
                       <td key={colIdx} className={`px-4 py-2 border-b ${cell}`}>
                         {col.render ? col.render(item) : item[col.accessor]}
