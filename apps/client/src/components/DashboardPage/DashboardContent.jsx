@@ -3,6 +3,7 @@ import Card from '../utils/Card'
 import { Link } from 'react-router-dom'
 import { getTransactions } from '../../api/transaction/transactions'
 import { getAllBudgets } from '../../api/budget/budget'
+import { getAllSavingsGoals } from '../../api/savings/savings'
 import { updateMonthlyIncome, getMonthlyIncome } from '../../api/user/user'
 import DataTable from '../utils/DataTable'
 import Button from '../utils/Button'
@@ -11,6 +12,7 @@ import { getDate } from '../utils/getDate'
 const DashboardContent = () => {
     const monthly_incomeRef = useRef()
     const [transactions, setTransactions] = useState([])
+    const [savingsGoals, setSavingsGoals] = useState([])
     const [transactionTotal, setTransactionTotal] = useState(0)
     const [budgets, setBudgets] = useState([])
     const [budgetTotal, setBudgetTotal] = useState(0)
@@ -61,6 +63,17 @@ const DashboardContent = () => {
             }
         }
 
+        const getSavings = async () => {
+            try {
+                const data = await getAllSavingsGoals()
+                setSavingsGoals(data.savings_goals)
+                console.log(savingsGoals)
+            } catch (error) {
+                setError(error.message)
+            }
+        }
+
+        getSavings()
         getIncome()
         getBudgets()
         getAllTransactions()
@@ -98,7 +111,7 @@ const DashboardContent = () => {
         }
     }, [budgets])
 
-    const columns = [
+    const TransactionColumns = [
         {
             label: 'Transaction Amount', 
             accessor: 'amount', 
@@ -112,6 +125,21 @@ const DashboardContent = () => {
             label: 'Date', 
             accessor: 'created_at', 
             render: item => item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-'
+        }
+    ]
+
+    const SavingsColumns = [
+        {
+            label: 'Title',
+            accessor: 'title',
+        },
+        {
+            label: 'Target Amount',
+            render: item => `$${item.target_amount}`
+        },
+        {
+            label: 'Current Amount',
+            render: item => `$${item.current_amount}`
         }
     ]
 
@@ -164,7 +192,7 @@ const DashboardContent = () => {
                         <h2 className='text-xl montesserat-400 m-2 text-center'>Latest Transactions</h2>
                         <div className='flex-grow overflow-auto rounded-lg mt-5'>
                             <DataTable 
-                                columns={columns}
+                                columns={TransactionColumns}
                                 data={transactions}
                                 styleConfig={{
                                     header: 'bg-green-100 text-green-900',
@@ -188,6 +216,18 @@ const DashboardContent = () => {
                 <div className='flex flex-col p-3'>
                     <h2 className='text-xl montesserat-400'>Savings Goals</h2>
                     <p className='text-sm montesserat-300'></p>
+                    <div className='flex-grow overflow-auto rounded-lg mt-5'>
+                            <DataTable 
+                                columns={SavingsColumns}
+                                data={savingsGoals}
+                                styleConfig={{
+                                    header: 'bg-green-100 text-green-900',
+                                    row: 'hover:bg-green-50',
+                                    cell: 'text-sm',
+                                    table: 'rounded-lg'
+                                }}
+                            />
+                        </div>
                 </div>
             </Card>
             <Card className=''>
