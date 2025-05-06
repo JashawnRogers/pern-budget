@@ -1,5 +1,8 @@
 const pool = require('../config/dbEntry')
 const bcrypt = require('bcrypt')
+const upload = require('../helpers/upload')
+const fs = require('fs')
+const path = require('path')
 
 
 module.exports = {
@@ -7,7 +10,17 @@ module.exports = {
         try {
             const { name, email, password } = req.body
             const hashedPassword = await bcrypt.hash(password, 10)
+
+            if (!email || !email.includes('@')) {
+                return res.status(400).json({ message: 'A valid email is required' })
+            }
+
+            if (!password || password.length < 8) {
+                return res.status(400).json({ message: 'Password must be at least 8 characters' })
+            }
+
             const query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *'
+
             const { rows } = await pool.query(query, [name, email, hashedPassword])
 
             res.status(201).json({message: 'User successfully registered', user: rows[0]})
@@ -143,6 +156,154 @@ module.exports = {
         } catch (error) {
             console.error('Error fetching session:', error);
             res.status(500).json({ message: 'Internal server error', error: error.message });
+        }
+    },
+    uploadProfileImage: async (req, res) => {
+        try {
+            if (!req.session?.user) {
+                return res.status(401).json({ message: 'User not authorized' })
+            }
+
+            const user_id = req.session.user.id
+            const file = req.file
+
+            if (!file) {
+                return res.status(400).json({ message: 'No image uploaded' })
+            }
+
+            // Builds public url for image
+            const imageUrl = `${req.protocol}://${req.get('host')}/uploads/profile_images/${req.file.filename}`
+
+            // Get the current profile image to delete it
+            const existingQuery = 'SELECT profile_image FROM users WHERE user_id = $1'
+            const existingResult = await pool.query(existingQuery, [user_id])
+            const existingImage = existingResult.rows[0]?.profile_image
+
+            // Delete old file if it exists
+            if (existingImage) {
+                const oldImagePath = path.join(__dirname, '..', 'uploads', 'profile_images', path.basename(existingImage))
+                fs.unlink(oldImagePath, (error) => {
+                    // Using console.warn to prevent app from crashing if operation fails
+                    if (error) {
+                        console.warn('Failed to delete old image', error.message)
+                    }
+                })
+            }
+
+            // Save new image to db
+            const updateQuery = `
+                UPDATE users
+                SET profile_image = $1
+                WHERE user_id = $2
+                RETURNING user_id, name, email, profile_image
+            `
+
+            const { rows } = await pool.query(updateQuery, [imageUrl, user_id])
+
+            // Update user session
+            req.session.user.profile_image = rows[0].profile_image
+
+            return res.status(200).json({
+                message: 'Profile image uploaded successfully',
+                user: rows[0]
+            })
+        } catch (error) {
+            console.error('Upload failed', error)
+            return res.status(500).json({ message: 'Internal server error', error: error.message })
+        }
+    }, 
+    updateEmail: async (req, res) => {
+        try {
+            if (!req.session.user) {
+                return res.status(401).json({ message: 'User not authorized' })
+            }
+
+            const user_id = req.session.user.id
+            const { email } = req.body
+
+            if (!email || !email.includes('@')) {
+                return res.status(400).json({ message: 'A valid email is required' })
+            }
+
+            const query = `
+                UPDATE users
+                SET email = $1
+                WHERE user_id = $2
+                RETURNING user_id, name, email,
+            `
+            const { rows } = await pool.query(query, [email, user_id])
+
+            req.session.user.email = rows[0].email
+
+            return res.status(200).json({
+                message: 'Email successfully updated',
+                user: rows[0]
+            })
+
+        } catch (error) {
+            if (error.code === '23505') {
+                return res.status(400).json({ error: 'Email already in use' });
+            }
+
+            return res.status(500).json({ message: 'Internal server error', error: error.message })
+        }
+    },
+    updatePassword: async (req, res) => {
+        try {
+            if (!req.session.user) {
+                return res.status(401).json({ message: 'User not authorized' })
+            }
+
+            const user_id = req.session.user.id
+            const { password } = req.body
+            const hashedPassword = await bcrypt.hash(password, 10)
+
+            if (!password || password.length < 8) {
+                return res.status(400).json({ message: 'Password must be at least 8 characters' })
+            }
+
+            const query = `
+                UPDATE users
+                SET password = $1
+                WHERE user_id = $2
+            `
+            await pool.query(query, [hashedPassword, user_id])
+
+            return res.status(200).json({ message: 'Password successfully updated' })
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error', error: error.message })
+        }
+    },
+    updateName: async (req, res) => {
+        try {
+            if (!req.session.user) {
+                return res.status(401).json({ message: 'User not authorized' })
+            }
+
+            const user_id = req.session.user.id
+            const { name } = req.body
+
+            if (!name || name.trim().length === 0) {
+                return res.status(400).json({ message: 'Name cannot be empty' })
+            }
+
+            const query = `
+                UPDATE users
+                SET name = $1
+                WHERE user_id = $2
+                RETURNING user_id, name, email, profile_image
+            `
+
+           const { rows } = await pool.query(query, [name, user_id])
+
+           req.session.user.name = rows[0].name
+
+            return res.status(200).json({ 
+                message: 'Profile name successfully updated',
+                user: rows[0]
+            })
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error', error: error.message })
         }
     }
 }

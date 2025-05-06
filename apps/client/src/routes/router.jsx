@@ -3,10 +3,11 @@ import LandingPage from '../pages/LandingPage'
 import AuthPage from '../pages/AuthPage'
 import DashboardPage from '../pages/DashboardPage'
 import { authLoader } from '../api/auth/authLoader'
-import Layout from '../components/Layout'
+import Layout from '../layouts/Layout'
 import BudgetPage from '../pages/BudgetPage'
 import TransactionsPage from '../pages/TransactionsPage'
 import SavingsPage from '../pages/SavingsPage'
+import SettingsPage from '../pages/SettingsPage'
 
 // Public Routes (No Layout)
 const publicRoutes = [
@@ -38,6 +39,11 @@ const protectedRoutes = [
             {
                 path: '/savings',
                 element: <SavingsPage />,
+                loader: authLoader
+            },
+            {
+                path: '/settings',
+                element: <SettingsPage />,
                 loader: authLoader
             }
         ]

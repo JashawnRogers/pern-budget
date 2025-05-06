@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const upload = require('../helpers/upload')
 
 const userController = require('../controller/userController')
 
@@ -10,6 +11,7 @@ router.get('/logout', userController.logout)
 router.get('/session', userController.getSession)
 router.get('/income', userController.getMonthlyIncome)
 router.put('/income/update', userController.updateMonthlyIncome)
+router.put('/upload-profile-image', upload.single('profileImage'), userController.uploadProfileImage )
 
 
 

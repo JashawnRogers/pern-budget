@@ -41,7 +41,7 @@ const DashboardNav = () => {
         </ul>
         <ul className='flex items-center gap-5 montesserat-300'>
             <li>
-                <NavLink>
+                <NavLink to='/settings'>
                     <CiSettings className='w-[25px] h-[25px]'/>
                 </NavLink>
             </li>
