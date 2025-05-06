@@ -213,22 +213,24 @@ const DashboardContent = () => {
                 </div>
             </Card>
             <Card className='row-span-2'>
-                <div className='flex flex-col p-3'>
-                    <h2 className='text-xl montesserat-400'>Savings Goals</h2>
-                    <p className='text-sm montesserat-300'></p>
-                    <div className='flex-grow overflow-auto rounded-lg mt-5'>
-                            <DataTable 
-                                columns={SavingsColumns}
-                                data={savingsGoals}
-                                styleConfig={{
-                                    header: 'bg-green-100 text-green-900',
-                                    row: 'hover:bg-green-50',
-                                    cell: 'text-sm',
-                                    table: 'rounded-lg'
-                                }}
-                            />
-                        </div>
-                </div>
+                <Link to='/savings'>
+                    <div className='flex flex-col p-3'>
+                        <h2 className='text-xl montesserat-400'>Savings Goals</h2>
+                        <p className='text-sm montesserat-300'></p>
+                        <div className='flex-grow overflow-auto rounded-lg mt-5'>
+                                <DataTable 
+                                    columns={SavingsColumns}
+                                    data={savingsGoals}
+                                    styleConfig={{
+                                        header: 'bg-green-100 text-green-900',
+                                        row: 'hover:bg-green-50',
+                                        cell: 'text-sm',
+                                        table: 'rounded-lg'
+                                    }}
+                                />
+                            </div>
+                    </div>
+                </Link>
             </Card>
             <Card className=''>
                 <div className='flex flex-col p-3'>

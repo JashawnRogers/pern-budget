@@ -20,7 +20,7 @@ const DashboardNav = () => {
         <ul className='flex items-center gap-5 text-xl montesserat-300'>
             <li>
                 <NavLink to='/dashboard'>
-                    <p>Overview</p>
+                    <p>Dashboard</p>
                 </NavLink>
             </li>
             <li>
