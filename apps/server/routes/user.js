@@ -12,6 +12,9 @@ router.get('/session', userController.getSession)
 router.get('/income', userController.getMonthlyIncome)
 router.put('/income/update', userController.updateMonthlyIncome)
 router.put('/upload-profile-image', upload.single('profileImage'), userController.uploadProfileImage )
+router.put('/update-email', userController.updateEmail)
+router.put('/update-password', userController.updatePassword)
+router.put('/update-name', userController.updateName)
 
 
 
