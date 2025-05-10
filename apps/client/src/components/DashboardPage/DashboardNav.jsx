@@ -47,7 +47,17 @@ const DashboardNav = () => {
             </li>
             <li>
                 <NavLink>
-                    <CgProfile className='w-[45px] h-[45px]'/>
+                    {
+                        user.profile_image ? (
+                            <img 
+                                className='w-[45px] h-[45px] rounded-full object-cover' 
+                                src={user?.profile_image}
+                                alt='User profile image' 
+                            />
+                        ) : (
+                            <CgProfile className='w-[45px] h-[45px]'/>
+                        )
+                    }
                 </NavLink>
             </li>
             <li>

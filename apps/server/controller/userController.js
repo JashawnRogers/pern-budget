@@ -37,7 +37,7 @@ module.exports = {
     logIn: async (req, res) => {
         try {
             const { email, password } = req.body
-            const query = 'SELECT user_id, email, name, password FROM users WHERE email = $1'
+            const query = 'SELECT user_id, email, name, password, profile_image FROM users WHERE email = $1'
             const { rows } = await pool.query(query, [email])
             
             if (rows.length === 0) {
@@ -51,8 +51,13 @@ module.exports = {
                 return res.status(401).json({error: 'Incorrect password'})
             }
         
-            req.session.user = { id: user.user_id, email: user.email, name: user.name }
-            console.log(req.session.user)
+            req.session.user = { 
+                id: user.user_id, 
+                email: user.email, 
+                name: user.name,
+                profile_image: user.profile_image || null
+            }
+        
             res.status(202).json({message: 'User successfully logged in', user: req.session.user})
         } catch (error) {
             console.error(error)
@@ -167,12 +172,16 @@ module.exports = {
             const user_id = req.session.user.id
             const file = req.file
 
+            console.log('File:', req.file)
+            console.log('Body:',req.body)
+
             if (!file) {
                 return res.status(400).json({ message: 'No image uploaded' })
             }
 
             // Builds public url for image
             const imageUrl = `${req.protocol}://${req.get('host')}/uploads/profile_images/${req.file.filename}`
+            console.log(req.file.filename)
 
             // Get the current profile image to delete it
             const existingQuery = 'SELECT profile_image FROM users WHERE user_id = $1'
@@ -199,7 +208,7 @@ module.exports = {
             `
 
             const { rows } = await pool.query(updateQuery, [imageUrl, user_id])
-
+            console.log('Returned row from UPDATE:', rows[0]);
             // Update user session
             req.session.user.profile_image = rows[0].profile_image
 

@@ -67,7 +67,6 @@ const DashboardContent = () => {
             try {
                 const data = await getAllSavingsGoals()
                 setSavingsGoals(data.savings_goals)
-                console.log(savingsGoals)
             } catch (error) {
                 setError(error.message)
             }

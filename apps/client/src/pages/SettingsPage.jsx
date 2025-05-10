@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import Button from '../components/utils/Button'
 import Modal from '../components/utils/Modal'
+import { uploadProfilePic } from '../api/settings/settings'
+import { useAuth } from '../api/auth/authContext'
 
 const SettingsPage = () => {
     const [preview, setPreview] = useState(null)
+    const [profileImage, setProfileImage] = useState(null)
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -11,6 +14,7 @@ const SettingsPage = () => {
     const [error, setError] = useState('')
     const [deleteAccount, setDeleteAccount] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const { user, setUser } = useAuth()
 
     const settingsCard = 'flex flex-col gap-4 w-full max-w-sm bg-white shadow-md p-6 rounded-xl border border-gray-200'
     const settingsInput = 'rounded-3xl h-10 w-full pl-4 border border-gray-300 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -19,11 +23,32 @@ const SettingsPage = () => {
         setIsModalOpen(false)
     }
 
-    const handleImageChange = (e) => {
+    const handleImageUpload = async (e) => {
+        e.preventDefault()
+
+       if (!profileImage) {
+            setError('Please select an image first')
+            return
+       }
+
+        try {
+            const { user } = await uploadProfilePic(profileImage)
+            setUser(user) // updating the user context
+            alert('Profile image successfully updated')
+            setPreview(null)
+        } catch (error) {
+            console.error(error)
+            setError(error.message)
+        }
+    }
+
+    const selectImage = (e) => {
         const file = e.target.files[0]
         if (file) {
             const fileURL = URL.createObjectURL(file)
+            setProfileImage(file)
             setPreview(fileURL)
+            setError('')
         } else {
             setPreview(null)
         }
@@ -54,13 +79,13 @@ const SettingsPage = () => {
         <div className='grid grid-cols-1 md:grid-cols-3 md:grid-rows-3 gap-8 max-w-6xl mx-auto'>
             
             {/* Upload Profile Picture */}
-            <form className={`${settingsCard} md:row-span-2`}>
+            <form className={`${settingsCard} md:row-span-2`} onSubmit={handleImageUpload}>
                 <label htmlFor='profileImage' className='text-lg font-medium'>Upload Profile Picture:</label>
                 <input 
                     type='file'
                     name='profileImage'
                     accept='image/*'
-                    onChange={handleImageChange}
+                    onChange={selectImage}
                     className={settingsInput}
                 />
 
@@ -124,6 +149,7 @@ const SettingsPage = () => {
                 <input 
                     type="text"
                     value={deleteAccount}
+                    onChange={e => setDeleteAccount(e.target.value)}
                     className={settingsInput}
                 />         
                 <Button type='submit' className='!bg-red-500 text-white w-full'>Delete Account</Button>

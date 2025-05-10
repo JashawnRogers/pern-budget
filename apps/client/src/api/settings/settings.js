@@ -1,12 +1,14 @@
 const BASE_URL = 'http://localhost:8001/api/user'
 
-export const uploadProfilePic = async ({ user_id, file }) => {
+export const uploadProfilePic = async (file) => {
+    const formData = new FormData()
+    formData.append('profileImage', file) // 'profileImage' must match the field name used in multer in backend
+
     try {
         const res = await fetch(`${BASE_URL}/upload-profile-image`, {
             method: 'PUT',
             credentials: 'include',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({user_id, file})
+            body: formData
         })
 
         if (!res.ok) {
@@ -14,8 +16,7 @@ export const uploadProfilePic = async ({ user_id, file }) => {
             throw new Error(error.message || 'Sorry, we could not update your profile picture. Something was wrong with your request.')
         }
 
-        const data = await res.json()
-        return data
+        return await res.json()
     } catch (error) {
         throw new Error(error.message || 'Ran into issues updating your profile picture on server.')
     }

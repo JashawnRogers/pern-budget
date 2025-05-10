@@ -8,6 +8,7 @@ const transactionsRoute = require('./routes/transactions')
 const budgetsRoute = require('./routes/budgets')
 const savingsGoalsRoute = require('./routes/savings')
 const multer = require('multer')
+const path = require('path')
 require('dotenv').config()
 
 const app = express()
@@ -31,6 +32,8 @@ app.use((err, req, res, next) => {
 
     next(err)
 })
+// Serves files from uploads folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 //session
 app.use(session({
