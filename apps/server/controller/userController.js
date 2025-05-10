@@ -292,7 +292,7 @@ module.exports = {
             const user_id = req.session.user.id
             const { name } = req.body
 
-            if (!name || name.trim().length === 0) {
+            if (!name) {
                 return res.status(400).json({ message: 'Name cannot be empty' })
             }
 

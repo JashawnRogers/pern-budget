@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import Button from '../components/utils/Button'
 import Modal from '../components/utils/Modal'
-import { uploadProfilePic } from '../api/settings/settings'
+import { uploadProfilePic, updateName, updatePassword, deleteUserAccount, updateEmail } from '../api/settings/settings'
 import { useAuth } from '../api/auth/authContext'
+import { useNavigate } from 'react-router-dom'
 
 const SettingsPage = () => {
     const [preview, setPreview] = useState(null)
@@ -15,6 +16,9 @@ const SettingsPage = () => {
     const [deleteAccount, setDeleteAccount] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false)
     const { user, setUser } = useAuth()
+
+    const navigate = useNavigate()
+    const passwordPhraseToDeleteAccount = 'I am super sure I am deleting my account.'
 
     const settingsCard = 'flex flex-col gap-4 w-full max-w-sm bg-white shadow-md p-6 rounded-xl border border-gray-200'
     const settingsInput = 'rounded-3xl h-10 w-full pl-4 border border-gray-300 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -54,26 +58,110 @@ const SettingsPage = () => {
         }
     }
 
-    const handlePasswordSubmit = (e) => {
+    const handleUpdateProfileName = async (e) => {
+        e.preventDefault()
+
+        if (!name) {
+            setError('Please enter a name')
+            return
+        }
+
+        if (name === user.name) {
+            setError('Please provide a new name')
+            return
+        }
+
+        try {
+            setError('')
+            const { user } = await updateName({ name })
+            setUser(user)
+            alert('Profile name successfully updated')
+            setName('')
+        } catch (error) {
+            console.error(error)
+            setError(error.message)
+        }
+    }
+
+    const handleUpdatePassword = (e) => {
         e.preventDefault()
         if (!password) return
         setIsModalOpen(true)
     }
 
-    const handleConfirm = (e) => {
+    const handleConfirm = async (e) => {
         e.preventDefault()
+        
         if (password !== confirmPassword) {
             setError('Passwords do not match')
+            return
         }
 
-        setError('')
-        setIsModalOpen(false)
-        alert('Password successfully changed')
-        setPassword('')
-        setConfirmPassword('')
+        try {
+            setError('')
+            const { user } = await updatePassword({ password })
+            setUser(user)
+            setIsModalOpen(false)
+            alert('Password successfully updated')
+            setPassword('')
+            setConfirmPassword('')
+        } catch (error) {
+            console.error(error)
+            setError(error.message)
+        }
+    }
+
+    const handleDeleteAccount = async (e) => {
+        e.preventDefault()
+
+        if (deleteAccount.trim() !== passwordPhraseToDeleteAccount) {
+            setError('Input does not match specified phrase')
+            return
+        }
+
+        try {
+            setError('')
+            await deleteUserAccount(user.id)
+            alert('Profile deleted successfully')
+            navigate('/')
+        } catch (error) {
+            console.error(error)
+            setError(error.message)
+        }
+    }
+
+    const handleUpdateEmail = async (e) => {
+        e.preventDefault()
+
+        if (!email) {
+            setError('Please provide a email')
+            return
+        }
+
+        if (email === user.email) {
+            setError('Please provide a new email')
+            return
+        }
+
+        try {
+            setError('')
+            const { user } = await updateEmail({ email })
+            setUser(user)
+            alert('Email successfully updated')
+            setEmail('')
+        } catch (error) {
+            console.error(error)
+            setError(error.message)
+        }
     }
 
   return (
+    <>
+    {error && (
+        <div className="col-span-full bg-red-100 text-red-800 p-4 rounded-lg border border-red-300">
+          <strong>Error:</strong> {error}
+        </div>
+    )}
     <div className='min-h-screen bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6'>
         <h1 className='montesserat-400 text-5xl mb-12 text-center text-white'>Settings</h1>
         <div className='grid grid-cols-1 md:grid-cols-3 md:grid-rows-3 gap-8 max-w-6xl mx-auto'>
@@ -99,7 +187,7 @@ const SettingsPage = () => {
             </form>
             
             {/* Change Profile Name */}
-            <form className={settingsCard}>
+            <form className={settingsCard} onSubmit={handleUpdateProfileName}>
                 <label htmlFor='name' className='text-lg'>Change Profile Name:</label>
                 <input 
                     type='text'
@@ -112,7 +200,7 @@ const SettingsPage = () => {
             </form>
 
             {/* Change Password */}
-            <form onSubmit={handlePasswordSubmit} className={settingsCard}>
+            <form onSubmit={handleUpdatePassword} className={settingsCard}>
                 <label htmlFor='password' className='text-lg'>Change Password:</label>
                 <input 
                     type='password'
@@ -143,9 +231,9 @@ const SettingsPage = () => {
             )}
 
             {/* Delete Account */}
-            <form className='flex flex-col gap-4 w-full bg-white shadow-md p-6 rounded-xl border border-gray-200 items-center md:col-span-2'>
+            <form onSubmit={handleDeleteAccount} className='flex flex-col gap-4 w-full bg-white shadow-md p-6 rounded-xl border border-gray-200 items-center md:col-span-2'>
                 <p className="text-lg font-medium text-red-600 mb-2">Danger Zone</p>
-                <p className="text-lg font-medium mb-2">Enter phrase: '<span className='font-bold'>I am super sure I am deleting my account.</span>'</p>
+                <p className="text-lg font-medium mb-2">Enter phrase: '<span className='font-bold'>{passwordPhraseToDeleteAccount}</span>'</p>
                 <input 
                     type="text"
                     value={deleteAccount}
@@ -156,7 +244,7 @@ const SettingsPage = () => {
             </form>
 
             {/* Change Email */}
-            <form className={settingsCard}>
+            <form className={settingsCard} onSubmit={handleUpdateEmail}>
                 <label htmlFor='email' className='text-lg'>Change email:</label>
                 <input 
                     type='email'
@@ -169,6 +257,7 @@ const SettingsPage = () => {
             </form>    
         </div>
     </div>
+    </>
   )
 }
 

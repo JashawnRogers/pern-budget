@@ -22,13 +22,13 @@ export const uploadProfilePic = async (file) => {
     }
 }
 
-export const updateEmail = async ({user_id, email}) => {
+export const updateEmail = async ({ email }) => {
     try {
         const res = await fetch(`${BASE_URL}/update-email`, {
             method: 'PUT',
             credentials: 'include',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({user_id, email})
+            body: JSON.stringify({ email })
         })
 
         if (!res.ok) {
@@ -43,13 +43,13 @@ export const updateEmail = async ({user_id, email}) => {
     }
 }
 
-export const updatePassword = async ({user_id, password}) => {
+export const updatePassword = async ({ password }) => {
     try {
         const res = await fetch(`${BASE_URL}/update-password`, {
             method: 'PUT',
             credentials: 'include',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({user_id, password})
+            body: JSON.stringify({ password })
         })
 
         if (!res.ok) {
@@ -64,13 +64,13 @@ export const updatePassword = async ({user_id, password}) => {
     }
 }
 
-export const updateName = async ({user_id, name}) => {
+export const updateName = async ({ name }) => {
     try {
         const res = await fetch(`${BASE_URL}/update-name`, {
             method: 'PUT',
             credentials: 'include',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({user_id, name})
+            body: JSON.stringify({ name })
         })
 
         if (!res.ok) {
@@ -85,7 +85,7 @@ export const updateName = async ({user_id, name}) => {
     }
 }
 
-export const deleteAccount = async ({user_id}) => {
+export const deleteUserAccount = async ({user_id}) => {
     try {
         const res = await fetch(`${BASE_URL}/delete/${user_id}`, {
             method: 'DELETE',
