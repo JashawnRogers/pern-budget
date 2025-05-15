@@ -232,11 +232,13 @@ const DashboardContent = () => {
                 </Link>
             </Card>
             <Card className=''>
-                <div className='flex flex-col p-3'>
-                    <h2 className='text-xl montesserat-400'>Reports</h2>
-                    <p className='text-sm montesserat-300'>Total budget for this month</p>
-                    <h3 className='text-6xl montesserat-400 mt-16'>$10,000</h3>
-                </div>
+                <Link to='/reports'>
+                    <div className='flex flex-col p-3'>
+                        <h2 className='text-xl montesserat-400'>Reports</h2>
+                        <p className='text-sm montesserat-300'>Total budget for this month</p>
+                        <h3 className='text-6xl montesserat-400 mt-16'>$10,000</h3>
+                    </div>
+                </Link>
             </Card>
     </section>
   )

@@ -8,6 +8,7 @@ import BudgetPage from '../pages/BudgetPage'
 import TransactionsPage from '../pages/TransactionsPage'
 import SavingsPage from '../pages/SavingsPage'
 import SettingsPage from '../pages/SettingsPage'
+import ReportsPage from '../pages/ReportsPage'
 
 // Public Routes (No Layout)
 const publicRoutes = [
@@ -44,6 +45,11 @@ const protectedRoutes = [
             {
                 path: '/settings',
                 element: <SettingsPage />,
+                loader: authLoader
+            },
+            {
+                path: '/reports',
+                element: <ReportsPage />,
                 loader: authLoader
             }
         ]
