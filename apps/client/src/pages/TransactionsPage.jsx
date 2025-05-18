@@ -6,11 +6,11 @@ import DataTable from '../components/utils/DataTable'
 import { MdDeleteForever } from 'react-icons/md'
 import { GoPlus } from 'react-icons/go'
 import { getAllBudgets } from '../api/budget/budget'
+import { toast } from 'react-hot-toast'
 
 
 const TransactionsPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [error, setError] = useState(null)
     const [transactions, setTransactions] = useState([])
     const [category, setCategory] = useState('')
     const [description, setDescription] = useState('')
@@ -32,7 +32,7 @@ const TransactionsPage = () => {
                 const data = await getAllBudgets()
                 setBudgets(data)
             } catch (error) {
-                setError(error.message)
+                toast.error(error.message)
             }
         }
 
@@ -41,23 +41,13 @@ const TransactionsPage = () => {
                 const data = await getTransactions()
                 setTransactions(data)
             } catch (error) {
-                setError(error.message)
+                toast.error(error.message)
             }
         }
         fetchAllBudgets()
         getAllTransactions()
     }, [])
 
-    useEffect(() => {
-        if (error) {
-          const timer = setTimeout(() => {
-            setError('')
-          }, 5000)
-    
-          return () => clearTimeout(timer)
-        }
-    
-      }, [error])
 
     const handleCreateTransaction = async (e) => {
         e.preventDefault()
@@ -65,20 +55,36 @@ const TransactionsPage = () => {
         const vendor = vendorRef.current.value
         const created_at = createdAtRef.current.value
 
+        if (!amount && !vendor && !description && !category) {
+            toast.error('Cannot create transaction without any filling out any fields.')
+            return
+        }
+
+        if (!category) {
+            toast.error('Cannot create transaction without a category')
+            return
+        }
+
+        if (!amount) {
+            toast.error('Cannot create transaction without setting an amount')
+            return
+        }
+
+
         const data = {amount, category, description, vendor, created_at}
 
         try {
-            setError(null)
             await createTransaction(data)
             const newTransactions = await getTransactions()
             setTransactions(newTransactions)
             amountRef.current.value = ''
             vendorRef.current.value = ''
+            toast.success('Successfully created transaction!')
             setCategory('')
             setDescription('')
             closeModal()
         } catch (error) {
-            setError(error.message || "Something's acting up.. My bad")
+            toast.error(error.message || "Something's acting up.. My bad")
         }
     }
 
@@ -121,11 +127,6 @@ const TransactionsPage = () => {
 
   return (
     <>
-        {error && (
-            <div className="col-span-full bg-red-100 text-red-800 p-4 rounded-lg border border-red-300">
-                <strong>Error:</strong> {error}
-            </div>
-        )}
         <div className='flex flex-col items-center gapy-y-32 justify-center max-h-[40vh] static'>
             <div className='min-h-[30vh] content-center'>
                 <div className='flex gap-x-4'>

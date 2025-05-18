@@ -5,10 +5,10 @@ import Button from '../components/utils/Button'
 import { createBudget, getAllBudgets, deleteBudget } from '../api/budget/budget'
 import DataTable from '../components/utils/DataTable'
 import { MdDeleteForever } from 'react-icons/md'
+import { toast } from 'react-hot-toast'
 
 const Budget = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [error, setError] = useState(null)
     const [budgets, setBudgets] = useState([])
     const categoryRef = useRef()
     const amountLimitRef = useRef()
@@ -43,21 +43,11 @@ const Budget = () => {
                 const data = await getAllBudgets()
                 setBudgets(data)
             } catch (error) {
-                setError(error.message)
+                toast.error(error.message)
             }
         }
         fetchAllBudgets()
     }, [])
-
-    useEffect(() => {
-        if (error) {
-            const timer = setTimeout(() => {
-                setError('')
-            }, 5000)
-
-            return () => clearTimeout(timer)
-        }
-    }, [error])
 
     const openModal = () => {
         setIsModalOpen(true)
@@ -75,26 +65,20 @@ const Budget = () => {
         const data = {category, amount_limit}
 
         try {
-            setError(null)
             await createBudget(data)
             const newBudgets = await getAllBudgets()
             setBudgets(newBudgets)
             categoryRef.current.value = ''
             amountLimitRef.current.value = ''
+            toast.success('Successfully created budget!')
             closeModal()
-            
         } catch (error) {
-            setError(error.message || "Something's acting up.. My bad")
+            toast.error(error.message || "Something's acting up.. My bad")
         }
     }
 
   return (
     <>
-        {error && (
-            <div className="col-span-full bg-red-100 text-red-800 p-4 rounded-lg border border-red-300">
-                <strong>Error:</strong> {error}
-            </div>
-        )}
         <div className='flex flex-col items-center gap-y-32 justify-center min-h-[60vh] static'>
             <div className='min-h-[30vh] content-center'>
                 <div className='flex gap-x-4'>
