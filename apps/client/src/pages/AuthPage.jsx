@@ -5,48 +5,39 @@ import authFormBG from '../assets/authform-bg.jpg'
 import { useLocation, useNavigate ,Link } from 'react-router-dom'
 import { login, register } from '../api/auth/auth'
 import { useAuth } from '../api/auth/authContext'
+import { toast } from 'react-hot-toast'
 
 const AuthPage = () => {
-  const [error, setError] = useState('')
   const { setUser } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const isRegistering = location.pathname === '/register'
 
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setError('')
-      }, 5000)
-
-      return () => clearTimeout(timer)
+  const handleAuth = async (formData, clientSideError) => {
+    if (clientSideError) {
+      toast.error(clientSideError)
+      return
     }
 
-  }, [error])
-
-  const handleAuth = async (formData) => {
     try {
       setError(null)
       let userData
       if (isRegistering) {
        userData = await register(formData)
+       toast.success('Successfully registered!')
       } else {
        userData = await login(formData)
+       toast.success('Welcome back!')
       }
       setUser(userData.user)
       navigate('/dashboard')
     } catch (error) {
-      setError(error.message)
+      toast.error(error.message || 'Authentication failed')
     }
   }
 
   return (
     <div className='flex justify-center items-center h-screen static'>
-      {error && (
-        <div className="col-span-full bg-red-100 text-red-800 p-4 rounded-lg border border-red-300 absolute top-1/6 left-1/2">
-          <strong>Error:</strong> {error}
-        </div>
-      )}
       <Link to='/' className='absolute top-4 left-4 hover:underline'>
         <p>Back to homepage</p>
       </Link>

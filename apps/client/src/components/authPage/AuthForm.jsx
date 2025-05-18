@@ -12,6 +12,21 @@ const AuthForm = ({ isRegistering, onSubmit }) => {
     const email = emailRef.current.value
     const password = passwordRef.current.value
 
+    if(!email.includes('@')) {
+      onSubmit(null, 'Please enter a valid email address.')
+      return
+    }
+
+    if (password.length > 8) {
+      onSubmit(null, 'Password must be at least 8 characters.')
+      return
+    }
+
+    if (isRegistering && name.trim() === '') {
+      onSubmit(null, 'Please enter a name to register an account.')
+      return
+    }
+
     const data = isRegistering ? { name, password, email } : { email, password }
     onSubmit(data)
   }
