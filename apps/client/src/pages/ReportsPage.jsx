@@ -42,7 +42,7 @@ const ReportsPage = () => {
     return (
     <div className='min-h-full'>
         <h1 className='montesserat-400 text-center text-white text-6xl mt-10'>Reports</h1>
-        <div className='flex justify-around mx-auto my-auto mt-10'>
+        <div className='flex flex-col justify-around mx-auto my-auto mt-10'>
             <BudgetPieChart data={budgetData} />
             {savingsData && <ProgressBar data={savingsData.savings_goals} title='Savings Progress' />}
         </div>
