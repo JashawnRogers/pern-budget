@@ -20,7 +20,6 @@ const AuthPage = () => {
     }
 
     try {
-      setError(null)
       let userData
       if (isRegistering) {
        userData = await register(formData)
