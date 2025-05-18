@@ -8,6 +8,7 @@ import { updateMonthlyIncome, getMonthlyIncome } from '../../api/user/user'
 import DataTable from '../utils/DataTable'
 import Button from '../utils/Button'
 import { getDate } from '../utils/getDate'
+import { toast } from 'react-hot-toast'
 
 const DashboardContent = () => {
     const monthly_incomeRef = useRef()
@@ -22,16 +23,23 @@ const DashboardContent = () => {
     const handleMonthlyIncome = async (e) => {
         e.preventDefault()
 
+        if (monthly_incomeRef === '') {
+            toast.error('Must enter a number to update monthly income')
+            return
+        }
+
         const monthly_income = monthly_incomeRef.current.value
         const parsedIncome = parseFloat(monthly_income)
         const data = {monthly_income: parsedIncome}
+
         try {
             setError(null)
             await updateMonthlyIncome(data)
             setMonthlyIncomeUI(parsedIncome)
             monthly_incomeRef.current.value = ''
+            toast.success('Monthly income successfully updated!')
         } catch (error) {
-            setError(error.message)
+            toast.error(error.message)
         }
     }
 
@@ -41,7 +49,7 @@ const DashboardContent = () => {
                 const data = await getTransactions()
                 setTransactions(data)
             } catch (error) {
-                setError(error.message)
+                toast.error(error.message)
             }
         }
 
@@ -50,7 +58,7 @@ const DashboardContent = () => {
                 const data = await getAllBudgets()
                 setBudgets(data)
             } catch (error) {
-                setError(error.message)
+                toast.error(error.message)
             }
         }
 
@@ -59,7 +67,7 @@ const DashboardContent = () => {
                 const data = await getMonthlyIncome()
                 setMonthlyIncomeUI(data)
             } catch (error) {
-                setError(error.message)
+                toast.error(error.message)
             }
         }
 
@@ -68,7 +76,7 @@ const DashboardContent = () => {
                 const data = await getAllSavingsGoals()
                 setSavingsGoals(data.savings_goals)
             } catch (error) {
-                setError(error.message)
+                toast.error(error.message)
             }
         }
 
@@ -77,16 +85,6 @@ const DashboardContent = () => {
         getBudgets()
         getAllTransactions()
     }, [])
-
-    useEffect(() => {
-        if (error) {
-            const timer = setTimeout(() => {
-                setError('')
-            }, 5000)
-            return () => clearTimeout(timer)
-        }
-
-    }, [error])
 
     useEffect(() => {
         if (transactions.length > 0) {
@@ -145,11 +143,6 @@ const DashboardContent = () => {
 
   return (
     <section className='p-4 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-stretch min-h-[80vh]'>
-        {error && (
-            <div className="col-span-full bg-red-100 text-red-800 p-4 rounded-lg border border-red-300">
-                <strong>Error:</strong> {error}
-            </div>
-        )}
             <Card>
                 <div className='flex flex-col p-3'>
                     <div className='flex gap-x-6 w-full justify-between'>
