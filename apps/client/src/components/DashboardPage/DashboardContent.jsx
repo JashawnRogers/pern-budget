@@ -146,7 +146,7 @@ const DashboardContent = () => {
             <Card>
                 <div className='flex flex-col p-3'>
                     <div className='flex gap-x-6 w-full justify-between'>
-                    <h2 className='text-xl montesserat-400'>Balance</h2> 
+                    <h2 className='text-3xl montesserat-400'>Balance</h2> 
                     <h2 className='text-base montesserat-400 p-1'>Monthly Income: ${monthlyIncomeUI.toFixed(2)}</h2>
                     </div>
                     <p className='text-sm montesserat-300'>{getDate()}</p>
@@ -170,7 +170,7 @@ const DashboardContent = () => {
             <Card className='hover:cursor-pointer'>
                 <Link to='/budget'>
                     <div className='flex flex-col p-3'>
-                        <h2 className='text-xl montesserat-400'>Budget</h2>
+                        <h2 className='text-3xl montesserat-400'>Budget</h2>
                         <p className='text-sm montesserat-300'>Total amount budgeted</p>
                         <h3 className='text-6xl montesserat-400 mt-16 mx-auto'>${budgetTotal.toFixed(2)}</h3>
                     </div>
@@ -181,7 +181,7 @@ const DashboardContent = () => {
             <Card className='lg:row-span-3 flex flex-col h-full'>
                 <Link to='/transactions' className='block h-full'>
                     <div className='flex flex-col p-3 h-full'>
-                        <h2 className='text-xl montesserat-400 m-2 text-center'>Latest Transactions</h2>
+                        <h2 className='text-3xl montesserat-400 m-2 text-center'>Latest Transactions</h2>
                         <div className='flex-grow overflow-auto rounded-lg mt-5'>
                             <DataTable 
                                 columns={TransactionColumns}
@@ -199,7 +199,7 @@ const DashboardContent = () => {
             </Card>   
             <Card>
                 <div className='flex flex-col p-3'>
-                    <h2 className='text-xl montesserat-400'>Expenses</h2>
+                    <h2 className='text-3xl montesserat-400'>Expenses</h2>
                     <p className='text-sm montesserat-300'>Total expenses</p>
                     <h2 className='text-5xl montesserat-400 mt-10 mx-auto'>${transactionTotal.toFixed(2)}</h2>
                 </div>
@@ -207,7 +207,7 @@ const DashboardContent = () => {
             <Card className='row-span-2'>
                 <Link to='/savings'>
                     <div className='flex flex-col p-3'>
-                        <h2 className='text-xl montesserat-400'>Savings Goals</h2>
+                        <h2 className='text-3xl montesserat-400'>Savings Goals</h2>
                         <p className='text-sm montesserat-300'></p>
                         <div className='flex-grow overflow-auto rounded-lg mt-5'>
                                 <DataTable 
@@ -227,7 +227,7 @@ const DashboardContent = () => {
             <Card className=''>
                 <Link to='/reports'>
                     <div className='flex flex-col p-3'>
-                        <h2 className='text-xl montesserat-400'>Reports</h2>
+                        <h2 className='text-3xl montesserat-400'>Reports</h2>
                         <p className='text-sm montesserat-300'>Total budget for this month</p>
                         <h3 className='text-3xl montesserat-400 mt-12'>Click here to see your reports</h3>
                     </div>

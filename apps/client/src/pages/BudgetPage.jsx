@@ -7,8 +7,11 @@ import DataTable from '../components/utils/DataTable'
 import { MdDeleteForever } from 'react-icons/md'
 import { toast } from 'react-hot-toast'
 import { updateBudget } from '../api/budget/budget'
+import ConfirmDialog from '../components/utils/ConfirmDialog'
 
 const Budget = () => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [budgetToDelete, setBudgetToDelete] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [budgets, setBudgets] = useState([])
     const [selectedBudget, setSelectedBudget] = useState(null)
@@ -28,15 +31,18 @@ const Budget = () => {
             </span>
         ) },
         { label: 'Date Created', render: item => item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-' },
-        { label: 'Delete', render: item => <button onClick={async () => {
-            const confirmed = window.confirm('Are you sure you want to delete this budget?')
-            if (confirmed) {
-               await deleteBudget(item.budget_id)
-               const updatedBudgets = await getAllBudgets()
-               setBudgets(updatedBudgets)
-            }
-        }} 
-        className='hover:cursor-pointer'><MdDeleteForever className='h-[30px] w-[30px] text-red-500' /></button>}
+        { label: 'Delete', render: item => 
+            <button 
+                onClick={(e) => {
+                    e.stopPropagation()
+                    setBudgetToDelete(item)
+                    setIsDialogOpen(true)
+                }} 
+                className='hover:cursor-pointer'
+            >
+                <MdDeleteForever className='h-[30px] w-[30px] text-red-500' />
+            </button>
+        }
       ]
 
     useEffect(() => {
@@ -163,6 +169,34 @@ const Budget = () => {
                 <Button type='submit' className='bg-[#528265]! text-white w-fit place-self-center my-5'>Complete</Button>
             </form>
         </Modal>
+        <ConfirmDialog 
+            isOpen={isDialogOpen}
+            message='Are you sure you want to delete this budget? This action cannot be undone.'
+            onCancel={() => {
+                setIsDialogOpen(false)
+                setBudgetToDelete(null)
+            }}
+            onConfirm={async () => {
+                if (!budgetToDelete) return
+                try {
+                    await toast.promise(
+                        deleteBudget(budgetToDelete.budget_id),
+                        {
+                            loading: 'Deleting...',
+                            success: 'Budget successfully deleted!',
+                            error: (error) => error.message || 'Delete failed'
+                        }
+                    )
+                    const updatedBudgets = await getAllBudgets()
+                    setBudgets(updatedBudgets)
+                } catch (error) {
+                    toast.error(error.message)
+                } finally {
+                    setIsDialogOpen(false)
+                    setBudgetToDelete(null)
+                }
+            }}
+        />
     </>
   )
 }

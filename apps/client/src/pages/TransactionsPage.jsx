@@ -7,9 +7,12 @@ import { MdDeleteForever } from 'react-icons/md'
 import { GoPlus } from 'react-icons/go'
 import { getAllBudgets } from '../api/budget/budget'
 import { toast } from 'react-hot-toast'
+import ConfirmDialog from '../components/utils/ConfirmDialog'
 
 
 const TransactionsPage = () => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [transactionToDelete, setTransactionToDelete] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [transactions, setTransactions] = useState([])
     const [selectedTransaction, setSelectedTransaction] = useState(null)
@@ -150,16 +153,18 @@ const TransactionsPage = () => {
             render: item => item.description ? 
             <textarea readOnly disabled defaultValue={item.description} className='border-none p-2 overflow-auto'></textarea>: 'N/A'
         },
-        {label: 'Delete', render: item => <button onClick={async () => {
-            const confirmed = window.confirm('Are you sure you want to delete this budget?')
-            if (confirmed) {
-               await deleteTransaction(item.id)
-               console.log('Successfully deleted transaction:', item.transaction)
-               const updatedTransactions = await getTransactions()
-               setTransactions(updatedTransactions)
-            }
-        }} 
-        className='hover:cursor-pointer'><MdDeleteForever className='h-[30px] w-[30px] text-red-500' /></button>}
+        {label: 'Delete', render: item => 
+            <button 
+                onClick={(e) => {
+                    e.stopPropagation()
+                    setTransactionToDelete(item)
+                    setIsDialogOpen(true)
+                }} 
+                className='hover:cursor-pointer'
+            >
+                <MdDeleteForever className='h-[30px] w-[30px] text-red-500' />
+            </button>
+        }
     ]
 
   return (
@@ -255,6 +260,34 @@ const TransactionsPage = () => {
                 <Button type='submit' className='bg-[#528265]! text-white w-fit place-self-center my-5'>Complete</Button>
             </form>
         </Modal>
+        <ConfirmDialog
+          isOpen={isDialogOpen}
+          message='Are you sure you want to delete this transaction?'
+          onCancel={() => {
+            setIsDialogOpen(false)
+            setGoalToDelete(null)
+          }}
+          onConfirm={async () => {
+            if (!transactionToDelete) return
+            try {
+              await toast.promise(
+                deleteTransaction(transactionToDelete.id),
+                {
+                  loading: 'Deleting...',
+                  success: 'Savings goal deleted!',
+                  error: (error) => error.message || 'Delete failed',
+                }
+              )
+              const updatedTransactions = await getTransactions()
+              setTransactions(updatedTransactions)
+            } catch (error) {
+              toast.error(error.message)
+            } finally {
+              setIsDialogOpen(false)
+              setTransactionToDelete(null)
+            }
+          }}
+        />
     </>
   )
 }

@@ -6,9 +6,11 @@ import { createSavingsGoal, getAllSavingsGoals, updateSavingsGoal, deleteSavings
 import DataTable from '../components/utils/DataTable'
 import { MdDeleteForever } from 'react-icons/md'
 import { toast } from 'react-hot-toast'
+import ConfirmDialog from '../components/utils/ConfirmDialog'
 
 const SavingsPage = () => {
-  const [error, setError] = useState(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [goalToDelete, setGoalToDelete] = useState(null)
   const [savings, setSavings] = useState([])
   const [selectedGoal, setSelectedGoal] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -23,17 +25,17 @@ const SavingsPage = () => {
     {label: 'Updated', render: item => item.updated_at ? new Date(item.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : '-'},
     {label: 'Date Created', render: item => new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })},
     {label: 'Delete', render: item => 
-    <button onClick={async (e) => {
-      e.stopPropagation()
-      const confirmed = window.confirm('Are you sure you want to delete this savings goal?')
-      if (confirmed) {
-        await deleteSavingsGoal(parseInt(item.savings_id))
-        const { savings_goals } = await getAllSavingsGoals()
-        setSavings(savings_goals)
-      }
-    }} className='hover:cursor-pointer'>
-      <MdDeleteForever className='h-[30px] w-[30px] text-red-500' />
-    </button>}
+      <button 
+        onClick={(e) => {
+          e.stopPropagation()
+          setGoalToDelete(item)
+          setIsDialogOpen(true)
+        }} 
+      className='hover:cursor-pointer'
+      >
+        <MdDeleteForever className='h-[30px] w-[30px] text-red-500' />
+      </button>
+    }
   ]
 
   const openModal = () => {
@@ -63,7 +65,6 @@ const SavingsPage = () => {
   useEffect(() => {
     if (isModalOpen) {
       if (selectedGoal) {
-        console.log(selectedGoal)
         setTitle(selectedGoal.title)
         setTargetAmount(selectedGoal.target_amount)
         setCurrentAmount(selectedGoal.current_amount)
@@ -196,8 +197,37 @@ const SavingsPage = () => {
 
             <Button type='submit' className='bg-[#528265]! text-white w-fit place-self-center my-5'>Complete</Button>
           </form>
-         </Modal>
-      </>
+        </Modal>
+
+        <ConfirmDialog
+          isOpen={isDialogOpen}
+          message="Are you sure you want to delete this savings goal?"
+          onCancel={() => {
+            setIsDialogOpen(false)
+            setGoalToDelete(null)
+          }}
+          onConfirm={async () => {
+            if (!goalToDelete) return
+            try {
+              await toast.promise(
+                deleteSavingsGoal(parseInt(goalToDelete.savings_id)),
+                {
+                  loading: 'Deleting...',
+                  success: 'Savings goal deleted!',
+                  error: (error) => error.message || 'Delete failed',
+                }
+              )
+              const { savings_goals } = await getAllSavingsGoals()
+              setSavings(savings_goals)
+            } catch (error) {
+              toast.error(error.message)
+            } finally {
+              setIsDialogOpen(false)
+              setGoalToDelete(null)
+            }
+          }}
+        />
+    </>
   )
 }
 
