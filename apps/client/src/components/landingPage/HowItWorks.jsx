@@ -6,7 +6,7 @@ import { GiSettingsKnobs } from 'react-icons/gi'
 
 const HowItWorks = () => {
   return (
-    <section className='mt-28'>
+    <section id='how-it-works' className='mt-28'>
         <div className='flex flex-col items-center gap-2 w-auto'>
             <h2 className='montesserat-400 text-5xl'>How It Works</h2>
             <p className='montesserat-300'>Embark on a seamless journey towards financial empowerment</p>

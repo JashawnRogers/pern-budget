@@ -5,7 +5,7 @@ import heroImage from '../../assets/hero-img.png'
 
 const Hero = () => {
   return (
-    <section>
+    <section id='home'>
         <div className="flex flex-col items-center mt-7">
             <h1 className='montesserat-400 text-7xl'>Smart Spending</h1>
             <h1 className='montesserat-400 text-7xl'>Starts Here</h1>
