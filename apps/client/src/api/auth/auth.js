@@ -1,61 +1,78 @@
 export const BASE_URL = 'http://localhost:8001/api/'
 
 export const login = async ({email, password}) => {
-    const res = await fetch(`${BASE_URL}user/login`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({email, password})
-    })
+    try {
+        const res = await fetch(`${BASE_URL}user/login`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email, password})
+        })
 
-    if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.message || 'Login failed')
+        if (!res.ok) {
+            const error = await res.json()
+            throw new Error(error.error || error.message || 'Login failed')
+        }
+    
+        return res.json()
+    } catch (error) {
+        throw new Error(error.error || error.message ||'Server error - could not login')
     }
-
-    return res.json()
 }
 
 export const register = async ({name, email, password}) => {
-    const res = await fetch(`${BASE_URL}user/register`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({name, email, password})
-    })
-
-    if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.message || 'Sign up failed')
+    try {
+        const res = await fetch(`${BASE_URL}user/register`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name, email, password})
+        })
+    
+        if (!res.ok) {
+            const error = await res.json()
+            throw new Error(error.error || error.message ||'Sign up failed')
+        }
+    
+        return res.json()
+    } catch (error) {
+        throw new Error(error.error || error.message ||'Server error - could not register new account')
     }
-
-    return res.json()
 }
 
 export const logout = async () => {
-    const res = await fetch(`${BASE_URL}user/logout`, {
-        method: 'GET',
-        credentials: 'include'
-    })
-
-    if (!res.ok) {
-        const error = res.json()
-        throw new Error(error.message || 'Logout failed')
+    try {
+        const res = await fetch(`${BASE_URL}user/logout`, {
+            method: 'GET',
+            credentials: 'include'
+        })
+    
+        if (!res.ok) {
+            const error = res.json()
+            throw new Error(error.error || error.message ||'Logout failed')
+        }
+    
+        return res.json()     
+    } catch (error) {
+        throw new Error(error.error || error.message ||'Server error - could not logout')
     }
-
-    return res.json()
 }
 
 export const getSession = async () => {
-    const res = await fetch(`${BASE_URL}user/session`, {
-        method: 'GET',
-        credentials: 'include',
-    })
+    try {
+        const res = await fetch(`${BASE_URL}user/session`, {
+            method: 'GET',
+            credentials: 'include',
+        })
+    
+        if (!res.ok) {
+            const error = await res.json()
+            throw new Error(error.error || error.message ||'Session check failed')
+        } 
 
-    if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.message || 'Session check failed')
+        return res.json()
+    } catch (error) {
+        throw new Error(error.error || error.message ||'Server error - get user session')
     }
 
-    return res.json()
 }

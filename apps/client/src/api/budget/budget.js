@@ -11,12 +11,12 @@ export const createBudget = async ({ category, amount_limit }) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.error || 'Login failed')
+            throw new Error(error.error || error.message ||'Login failed')
         }
 
         return await res.json()
     } catch (error) {
-        throw new Error(error.message || 'Ran into issues creating new budget')
+        throw new Error(error.error || error.message || 'Ran into issues creating new budget')
     }
 }
 
@@ -29,13 +29,13 @@ export const getAllBudgets = async () => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.error || 'Failed to fetch budgets')
+            throw new Error(error.error || error.message ||'Failed to fetch budgets')
         }
 
         const data = await res.json()
         return data.budgets
     } catch (error) {
-        throw new Error(error.message || 'Server failed to fetch budgets')
+        throw new Error(error.error || error.message ||'Server failed to fetch budgets')
     }
 }
 
@@ -48,13 +48,13 @@ export const deleteBudget = async (budget_id) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.error || 'Failed to delete budget')
+            throw new Error(error.error || error.message ||'Failed to delete budget')
         }
 
         console.log('Successfully deleted budget:', budget_id)
         return await res.json()
     } catch (error) {
-        throw new Error(error.message || 'Server failed to delete budget')
+        throw new Error(error.error || error.message ||'Server failed to delete budget')
     }
 }
 
@@ -69,11 +69,11 @@ export const updateBudget = async ({ category, amount_limit, budget_id }) => {
 
         if (!res.ok) {
             const error = await res.json();
-            throw new Error(error.error || 'Failed to update budget')
+            throw new Error(error.error || error.message ||'Failed to update budget')
         }
 
         return await res.json()
     } catch (error) {
-        throw new Error(error.message || 'Server failed to update budget')
+        throw new Error(error.error || error.message ||'Server failed to update budget')
     }
 }

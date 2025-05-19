@@ -15,7 +15,7 @@ module.exports = {
             const user_id = req.session.user.id
 
             if (typeof title !== 'string' || isNaN(target_amount)) {
-                return res.status(400).json({ message: 'Title and target amount are required fields' })
+                return res.status(400).json({ error: 'Title and target amount are required fields' })
             }
 
             await client.query('BEGIN')
@@ -23,7 +23,7 @@ module.exports = {
             const existingGoal = await pool.query('SELECT title FROM savings WHERE user_id = $1 AND LOWER(title) = LOWER($2)', [user_id, title])
             if (existingGoal.rowCount > 0) {
                 await client.query('ROLLBACK')
-                return res.status(400).json({ message: 'Savings goal already exists'})
+                return res.status(400).json({ error: 'Savings goal already exists'})
             }
 
             console.log('Creating savings goal with:', { user_id, title, target_amount, current_amount })
@@ -34,7 +34,7 @@ module.exports = {
             return res.status(200).json({ message: 'Savings goal successfully created', 'result': insertResult.rows[0] })
         } catch (error) {
             await client.query('ROLLBACK')
-            return res.status(500).json({ message: error.message ||  'Server error creating savings goal' })
+            return res.status(500).json({ error: 'Server error creating savings goal', message: error.message })
         } finally {
             client.release()
         }
@@ -51,7 +51,7 @@ module.exports = {
             const user_id = req.session.user.id
 
             if (title === undefined && target_amount === undefined) {
-                return res.status(400).json({ message: 'No value changed. To make a change, value must differ from what was previously saved' })
+                return res.status(400).json({ error: 'No value changed. To make a change, value must differ from what was previously saved' })
             }
 
             await client.query('BEGIN')
@@ -63,7 +63,7 @@ module.exports = {
     
             if (existingGoal.rowCount === 0) {
                 await client.query('ROLLBACK')
-                return res.status(404).json({ message: 'Savings goal not found or unauthorized' })
+                return res.status(404).json({ error: 'Savings goal not found or unauthorized' })
             }
                 
             const updateQuery = `
@@ -91,7 +91,7 @@ module.exports = {
             
         } catch (error) {
             await client.query('ROLLBACK')
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         } finally {
             client.release()
         }
@@ -101,14 +101,14 @@ module.exports = {
 
         try {
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
             const savings_id = parseInt(req.params.id, 10)
 
             if (isNaN(savings_id)) {
-                return res.status(404).json({ message: 'Invalid ID of savings goal' })
+                return res.status(404).json({ error: 'Invalid ID of savings goal' })
             }
 
             client.query('BEGIN')
@@ -120,7 +120,7 @@ module.exports = {
 
             if (checkResult.rowCount === 0) {
                 await client.query('ROLLBACK')
-                return res.status(404).json({ message: 'Savings goal not found' })
+                return res.status(404).json({ error: 'Savings goal not found' })
             }
 
             const deleteQuery = 'DELETE FROM savings WHERE user_id = $1 AND savings_id = $2'
@@ -131,7 +131,7 @@ module.exports = {
             return res.status(200).json({ message: 'Savings goal successfully deleted', savings_goal: rows[0] })
         } catch (error) {
             await client.query('ROLLBACK')
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         } finally {
             client.release()
         }
@@ -141,14 +141,14 @@ module.exports = {
 
         try {
             if (!req.session.user) {
-                return res.status(404).json({ message: 'User not authorized' })
+                return res.status(404).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
             const savings_id = parseInt(req.params.id, 10)
 
             if(isNaN(savings_id)) {
-                return res.status(400).json({ message: 'Invalid savings goal ID' })
+                return res.status(400).json({ error: 'Invalid savings goal ID' })
             }
 
 
@@ -161,7 +161,7 @@ module.exports = {
             return res.status(200).json({ savings_goal: result.rows[0] })
         } catch (error) {
             await client.query('ROLLBACK')
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         } finally {
             client.release()
         }
@@ -171,7 +171,7 @@ module.exports = {
 
         try {
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
@@ -184,7 +184,7 @@ module.exports = {
             return res.status(200).json({ savings_goals: result.rows })
         } catch (error) {
             await client.query('ROLLBACK')
-            return res.status(500).json({ message: 'Internal server error', error: error.message})
+            return res.status(500).json({ error: 'Internal server error', message: error.message})
         } finally {
             client.release()
         }

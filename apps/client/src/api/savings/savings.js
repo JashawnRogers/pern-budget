@@ -31,12 +31,12 @@ export const updateSavingsGoal = async ({ title, target_amount, savings_id, curr
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.error || 'Bad request - could not update savings goal')
+            throw new Error(error.error || error.message ||'Bad request - could not update savings goal')
         }
 
         return await res.json()
     } catch (error) {
-        throw new Error(error.message  || 'Server error - could not update savings goal')
+        throw new Error(error.error  || error.message ||'Server error - could not update savings goal')
     }
 }
 
@@ -49,11 +49,11 @@ export const deleteSavingsGoal = async (savings_id) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.message || 'Bad request - could not savings goal')
+            throw new Error(error.error || error.message ||'Bad request - could not savings goal')
         }
         return await res.json()
     } catch (error) {
-        throw new Error(error.message || 'Server error - could not delete savings goal')
+        throw new Error(error.error || error.message ||'Server error - could not delete savings goal')
     }
 }
 
@@ -66,12 +66,12 @@ export const getAllSavingsGoals = async () => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.message || 'Bad request - could not retrieve savings goals')
+            throw new Error(error.error || error.message ||'Bad request - could not retrieve savings goals')
         }
 
         return await res.json()
     } catch (error) {
-        throw new Error(error.message || 'Server error - could not retrieve savings goals')
+        throw new Error(error.error || error.message ||'Server error - could not retrieve savings goals')
     }
 }
 
@@ -84,11 +84,11 @@ export const getSavingsGoal = async ({ savings_id }) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.message || 'Bad request - could not retrieve savings goal')
+            throw new Error(error.error || error.message ||'Bad request - could not retrieve savings goal')
         }
 
         return await res.json()
     } catch (error) {
-        throw new Error(error.message || 'Server error - could not retrieve savings goal')
+        throw new Error(error.error || error.message ||'Server error - could not retrieve savings goal')
     }
 }

@@ -13,12 +13,12 @@ export const uploadProfilePic = async (file) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.message || 'Sorry, we could not update your profile picture. Something was wrong with your request.')
+            throw new Error(error.error || error.message ||'Sorry, we could not update your profile picture. Something was wrong with your request.')
         }
 
         return await res.json()
     } catch (error) {
-        throw new Error(error.message || 'Ran into issues updating your profile picture on server.')
+        throw new Error(error.error || error.message ||'Ran into issues updating your profile picture on server.')
     }
 }
 
@@ -33,13 +33,13 @@ export const updateEmail = async ({ email }) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.message || 'Sorry, we could not update your email. Something was wrong with your request.')
+            throw new Error(error.error || error.message ||'Sorry, we could not update your email. Something was wrong with your request.')
         }
 
         const data = await res.json()
         return data
     } catch (error) {
-        throw new Error(error.message || 'Ran into issues updating your email on server.')
+        throw new Error(error.error || error.message ||'Ran into issues updating your email on server.')
     }
 }
 
@@ -54,13 +54,13 @@ export const updatePassword = async ({ password }) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.message || 'Sorry, we could not update your password. Something was wrong with your request.')
+            throw new Error(error.error || error.message ||'Sorry, we could not update your password. Something was wrong with your request.')
         }
 
         const data = await res.json()
         return data
     } catch (error) {
-        throw new Error(error.message || 'Ran into issues updating your password on server.')
+        throw new Error(error.error || error.message ||'Ran into issues updating your password on server.')
     }
 }
 
@@ -75,13 +75,13 @@ export const updateName = async ({ name }) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.message || 'Sorry, we could not update your profile name. Something was wrong with your request.')
+            throw new Error(error.error || error.message ||'Sorry, we could not update your profile name. Something was wrong with your request.')
         }
 
         const data = await res.json()
         return data
     } catch (error) {
-        throw new Error(error.message || 'Ran into issues updating your profile name on server.')
+        throw new Error(error.error || error.message ||'Ran into issues updating your profile name on server.')
     }
 }
 
@@ -94,11 +94,11 @@ export const deleteUserAccount = async ({user_id}) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.message || 'Sorry, we could not delete your profile. Something was wrong with your request.')
+            throw new Error(error.error || error.message ||'Sorry, we could not delete your profile. Something was wrong with your request.')
         }
 
         return await res.json()
     } catch (error) {
-        throw new Error(error.message || 'Ran into issues deleting your profile on server.')
+        throw new Error(error.error || error.message ||'Ran into issues deleting your profile on server.')
     }
 }

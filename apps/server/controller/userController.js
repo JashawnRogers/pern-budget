@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const upload = require('../helpers/upload')
 const fs = require('fs')
 const path = require('path')
+const { error } = require('console')
 
 
 module.exports = {
@@ -12,11 +13,11 @@ module.exports = {
             const hashedPassword = await bcrypt.hash(password, 10)
 
             if (!email || !email.includes('@')) {
-                return res.status(400).json({ message: 'A valid email is required' })
+                return res.status(400).json({ error: 'A valid email is required' })
             }
 
             if (!password || password.length < 8) {
-                return res.status(400).json({ message: 'Password must be at least 8 characters' })
+                return res.status(400).json({ error: 'Password must be at least 8 characters' })
             }
 
             const query = 'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *'
@@ -31,7 +32,7 @@ module.exports = {
                 return res.status(400).json({ error: 'Email already in use' });
             }
 
-            res.status(500).json({message: 'Internal server error', error: error.message})
+            res.status(500).json({error: 'Internal server error', message: error.message})
         }
     },
     logIn: async (req, res) => {
@@ -61,7 +62,7 @@ module.exports = {
             res.status(202).json({message: 'User successfully logged in', user: req.session.user})
         } catch (error) {
             console.error(error)
-            res.status(500).json({message: 'Internal server error', error: error.message})
+            res.status(500).json({error: 'Internal server error', message: error.message})
         }
     },
     logout: async (req, res) => {
@@ -73,7 +74,7 @@ module.exports = {
 
             req.session.destroy((error) => {
                 if (error) {
-                    return res.status(500).json({ message: 'Logout failed', error: error.message })
+                    return res.status(500).json({ error: 'Logout failed', message: error.message })
                 }
             })
 
@@ -81,7 +82,7 @@ module.exports = {
             res.status(200).json({message: 'User successfully logged out'})
         } catch (error) {
             console.error('Unexpected error during logout:', error)
-            res.status(500).json({ message: 'Internal server error', error: error.message })
+            res.status(500).json({ error: 'Internal server error', message: error.message })
         }
     },
     deleteUser: async (req, res) => {
@@ -98,13 +99,13 @@ module.exports = {
             res.status(200).json({message: 'User successfully deleted', user: rows[0]})
         } catch (error) {
             console.error(error)
-            res.status(500).json({message: 'Internal server error', error: error.message})
+            res.status(500).json({error: 'Internal server error', message: error.message})
         }
     },
     getMonthlyIncome: async (req, res) => {
         try {
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
@@ -120,21 +121,21 @@ module.exports = {
             return res.status(200).json({message: 'Succesfully fetched monthly income!', monthly_income: monthly_income})            
         } catch (error) {
             console.error(error)
-            return res.status(500).json({message: 'Internal server error:', error: error.message})
+            return res.status(500).json({error: 'Internal server error:', message: error.message})
         }
     }   
     ,
     updateMonthlyIncome: async (req,res) => {
         try {
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
             const monthly_income = parseFloat(req.body.monthly_income)
 
             if (isNaN(monthly_income)) {
-                return res.status(400).json({message: 'Monthly Income must be a number'})
+                return res.status(400).json({error: 'Monthly Income must be a number'})
             }
 
             const query = `
@@ -148,7 +149,7 @@ module.exports = {
             res.status(200).json({message: 'Monthly income successfully updated!', monthly_income: monthly_income})
         } catch (error) {
             console.error(error)
-            res.status(500).json({message: 'Internal server error', error: error.message})
+            res.status(500).json({error: 'Internal server error', message: error.message})
         }
     },
     getSession: async (req, res) => {
@@ -156,17 +157,17 @@ module.exports = {
             if (req.session?.user) {
                 return res.status(200).json({ user: req.session.user });
             } else {
-                return res.status(401).json({ message: 'Not authenticated' });
+                return res.status(401).json({ error: 'Not authenticated' });
             }
         } catch (error) {
             console.error('Error fetching session:', error);
-            res.status(500).json({ message: 'Internal server error', error: error.message });
+            res.status(500).json({ error: 'Internal server error', message: error.message });
         }
     },
     uploadProfileImage: async (req, res) => {
         try {
             if (!req.session?.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
@@ -176,7 +177,7 @@ module.exports = {
             console.log('Body:',req.body)
 
             if (!file) {
-                return res.status(400).json({ message: 'No image uploaded' })
+                return res.status(400).json({ error: 'No image uploaded' })
             }
 
             // Builds public url for image
@@ -218,20 +219,20 @@ module.exports = {
             })
         } catch (error) {
             console.error('Upload failed', error)
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         }
     }, 
     updateEmail: async (req, res) => {
         try {
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
             const { email } = req.body
 
             if (!email || !email.includes('@')) {
-                return res.status(400).json({ message: 'A valid email is required' })
+                return res.status(400).json({ error: 'A valid email is required' })
             }
 
             const query = `
@@ -254,13 +255,13 @@ module.exports = {
                 return res.status(400).json({ error: 'Email already in use' });
             }
 
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         }
     },
     updatePassword: async (req, res) => {
         try {
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
@@ -268,7 +269,7 @@ module.exports = {
             const hashedPassword = await bcrypt.hash(password, 10)
 
             if (!password || password.length < 8) {
-                return res.status(400).json({ message: 'Password must be at least 8 characters' })
+                return res.status(400).json({ error: 'Password must be at least 8 characters' })
             }
 
             const query = `
@@ -280,20 +281,20 @@ module.exports = {
 
             return res.status(200).json({ message: 'Password successfully updated' })
         } catch (error) {
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         }
     },
     updateName: async (req, res) => {
         try {
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
             const { name } = req.body
 
             if (!name) {
-                return res.status(400).json({ message: 'Name cannot be empty' })
+                return res.status(400).json({ error: 'Name cannot be empty' })
             }
 
             const query = `
@@ -312,7 +313,7 @@ module.exports = {
                 user: rows[0]
             })
         } catch (error) {
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         }
     }
 }

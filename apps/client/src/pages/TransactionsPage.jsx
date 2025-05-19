@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from 'react'
 import Modal from '../components/utils/Modal'
 import Button from '../components/utils/Button'
-import { createTransaction, getTransactions, deleteTransaction } from '../api/transaction/transactions'
+import { createTransaction, getTransactions, deleteTransaction, updateTransaction } from '../api/transaction/transactions'
 import DataTable from '../components/utils/DataTable'
 import { MdDeleteForever } from 'react-icons/md'
 import { GoPlus } from 'react-icons/go'
@@ -12,18 +12,21 @@ import { toast } from 'react-hot-toast'
 const TransactionsPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [transactions, setTransactions] = useState([])
+    const [selectedTransaction, setSelectedTransaction] = useState(null)
     const [category, setCategory] = useState('')
     const [description, setDescription] = useState('')
+    const [vendor, setVendor] = useState('')
+    const [amount, setAmount] = useState('')
+    const [created_at, setCreated_at] = useState('')
     const [budgets, setBudgets] = useState([])
-    const vendorRef = useRef()
-    const amountRef = useRef()
-    const createdAtRef = useRef()
+  
 
     const openModal = () => {
         setIsModalOpen(true)
     }
     const closeModal = () => {
         setIsModalOpen(false)
+        setSelectedTransaction(null)
     }
 
     useEffect(() => {
@@ -48,12 +51,27 @@ const TransactionsPage = () => {
         getAllTransactions()
     }, [])
 
+    useEffect(() => {
+        if (isModalOpen) {
+            if (selectedTransaction) {
+                setAmount(selectedTransaction.amount)
+                setVendor(selectedTransaction.vendor || '')
+                setCategory(selectedTransaction.category)
+                setDescription(selectedTransaction.description || '')
+                setCreated_at(selectedTransaction.created_at?.slice(0, 10) || '')
+            } else {
+                setAmount('')
+                setVendor('')
+                setCategory('')
+                setDescription('')
+                setCreated_at('')
+            }
+        }
+    }, [isModalOpen, selectedTransaction])
+
 
     const handleCreateTransaction = async (e) => {
         e.preventDefault()
-        const amount = amountRef.current.value
-        const vendor = vendorRef.current.value
-        const created_at = createdAtRef.current.value
 
         if (!amount && !vendor && !description && !category) {
             toast.error('Cannot create transaction without any filling out any fields.')
@@ -74,12 +92,18 @@ const TransactionsPage = () => {
         const data = {amount, category, description, vendor, created_at}
 
         try {
-            await createTransaction(data)
+            if (selectedTransaction) {
+                await updateTransaction({amount, category, description, vendor, id: selectedTransaction.id})
+                toast.success('Successfully updated transaction!')
+            } else {
+                await createTransaction(data)
+                toast.success('Successfully created transaction!')
+            }
             const newTransactions = await getTransactions()
             setTransactions(newTransactions)
-            amountRef.current.value = ''
-            vendorRef.current.value = ''
-            toast.success('Successfully created transaction!')
+
+            setAmount('')
+            setVendor('')
             setCategory('')
             setDescription('')
             closeModal()
@@ -139,6 +163,10 @@ const TransactionsPage = () => {
                 <DataTable 
                     columns={columns}
                     data={transactions}
+                    onRowClick={(transaction) => {
+                        setSelectedTransaction(transaction)
+                        setIsModalOpen(true)
+                    }}
                     styleConfig={{
                         header: 'bg-green-100 text-green-900',
                         row: 'hover:bg-green-50',
@@ -150,6 +178,9 @@ const TransactionsPage = () => {
             }
         </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
+            <h2 className='text-3xl text-center mb-8'>
+                {selectedTransaction ? 'Edit Transaction' : 'Create New Transaction'}
+            </h2>
             <form onSubmit={handleCreateTransaction} method='post' className='grid items-center gap-4'>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
                     <label htmlFor='amount'>Amount:</label>
@@ -157,7 +188,8 @@ const TransactionsPage = () => {
                         id='amount' 
                         type='number'
                         step='0.01'
-                        ref={amountRef}
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
                         required
                         className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] p-3'
                     />
@@ -170,6 +202,7 @@ const TransactionsPage = () => {
                         onChange={(e) => setCategory(e.target.value)}
                         required
                     >
+                    <option value="" disabled>Select a category</option>
                         {budgets.map((budget) => (
                             <option key={budget.budget_id} value={budget.category}>
                                 {budget.category}
@@ -182,7 +215,8 @@ const TransactionsPage = () => {
                     <input
                         id='vendor'
                         type='text' 
-                        ref={vendorRef}
+                        value={vendor}
+                        onChange={(e) => setVendor(e.target.value)}
                         required
                         className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] p-3'
                     />
@@ -192,7 +226,8 @@ const TransactionsPage = () => {
                     <input
                         id='createdAt'
                         type='date'
-                        ref={createdAtRef}
+                        value={created_at}
+                        onChange={(e) => setCreated_at(e.target.value)}
                         className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] p-3'
                     />
                 </div>
@@ -201,7 +236,7 @@ const TransactionsPage = () => {
                     <textarea name='description' id='description' onChange={(e) => setDescription(e.target.value)} className='outline outline-black outline-solid rounded-3xl p-3 w-[350px] ml-3'></textarea>
                 </div>
 
-                <Button type='submit' className='bg-[#528265]! text-white w-fit place-self-center my-5'>Create Transaction</Button>
+                <Button type='submit' className='bg-[#528265]! text-white w-fit place-self-center my-5'>Complete</Button>
             </form>
         </Modal>
     </>

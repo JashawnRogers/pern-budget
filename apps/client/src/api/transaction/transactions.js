@@ -9,13 +9,13 @@ export const getTransactions = async () => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.error || 'Failed to fetch transactions')
+            throw new Error(error.error || error.message || 'Failed to fetch transactions')
         }
 
         const data = await res.json()
         return data.transactions
     } catch (error) {
-        throw new Error(error.message || 'Server failed to fetch transactions')
+        throw new Error(error.error || error.message || 'Server failed to fetch transactions')
     }
 }
 
@@ -30,14 +30,14 @@ export const createTransaction = async ({amount, type, category, description, ve
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.message || 'Failed to create transaction')
+            throw new Error(error.error || error.message || 'Failed to create transaction')
         }
 
         const data = await res.json()
         console.log(data)
         return data
     } catch (error) {
-        throw new Error(error.message || 'Server failed to create transaction')
+        throw new Error(error.error || error.message || 'Server failed to create transaction')
     }
 }
 
@@ -50,11 +50,31 @@ export const deleteTransaction = async (transaction_id) => {
 
         if (!res.ok) {
             const error = await res.json()
-            throw new Error(error.error || 'Failed to delete transaction')
+            throw new Error(error.error || error.message || 'Failed to delete transaction')
         }
 
         return await res.json()
     } catch (error) {
-        throw new Error(error.message || 'Server failed to delete transaction')
+        throw new Error(error.error || error.message ||'Server failed to delete transaction')
+    }
+}
+
+export const updateTransaction = async ({ amount, category, description, vendor, id }) => {
+    try {
+        const res = await fetch(`${BASE_URL}/update`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ amount, category, description, vendor, id })
+        })
+
+        if (!res.ok) {
+            const error = await res.json()
+            throw new Error(error.error || error.message || 'Failed to update transaction')
+        }
+
+        return await res.json()
+    } catch (error) {
+        throw new Error(error.error || error.message ||'Server failed to update transaction')
     }
 }

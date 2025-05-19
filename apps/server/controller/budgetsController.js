@@ -8,14 +8,14 @@ module.exports = {
         try {
 
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             let { category, amount_limit } = req.body
             amount_limit = parseFloat(req.body.amount_limit)
             const userId = req.session.user.id
             if (!category || isNaN(amount_limit)) {
-                return res.status(400).json({ message: 'Category and valid numeric limit are required fields'})
+                return res.status(400).json({ error: 'Category and valid numeric limit are required fields'})
             }
 
             await client.query('BEGIN')
@@ -33,7 +33,7 @@ module.exports = {
             return res.status(200).json({ message: 'Budget successfully created', 'result':insertResult.rows[0] })
         } catch (error) {
             await client.query('ROLLBACK')
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         } finally {
             client.release()
         }
@@ -43,14 +43,14 @@ module.exports = {
 
         try {
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const { category, amount_limit, budget_id } = req.body
             const userId = req.session.user.id
 
             if (category === undefined && limit === undefined) {
-                res.status(400).json({ message: 'No value changed. To make a change, value must differ from what was previously saved' })
+                res.status(400).json({ error: 'No value changed. To make a change, value must differ from what was previously saved' })
             }
 
             await client.query('BEGIN')
@@ -62,7 +62,7 @@ module.exports = {
 
             if (budgetCheck.rowCount === 0) {
                 await client.query('ROLLBACK');
-                return res.status(404).json({ message: 'Budget not found or unauthorized' })
+                return res.status(404).json({ error: 'Budget not found or user unauthorized' })
             }
 
             const updateQuery = `
@@ -80,7 +80,7 @@ module.exports = {
             return res.status(200).json({ message: 'Successfully updated budget', budget: result.rows[0]})
         } catch (error) {
             await client.query('ROLLBACK')
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         } finally {
             client.release()
         }
@@ -90,14 +90,14 @@ module.exports = {
 
         try {
             if (!req.session.user) {
-                return res.status(401).json({ message: 'User not authorized' })
+                return res.status(401).json({ error: 'User not authorized' })
             }
 
             const user_id = req.session.user.id
             const budget_id = parseInt(req.params.id, 10)
             
             if (isNaN(budget_id)) {
-                return res.status(404).json({ message: 'Invalid budget ID' })
+                return res.status(404).json({ error: 'Invalid budget ID' })
             }
 
             client.query('BEGIN')
@@ -108,7 +108,7 @@ module.exports = {
 
             if (checkResult.rowCount === 0) {
                 await client.query('ROLLBACK')
-                return res.status(404).json({ message: 'Budget not found' })
+                return res.status(404).json({ error: 'Budget not found' })
             }
 
             const deleteQuery = 'DELETE FROM user_budgets WHERE user_id = $1 AND budget_id = $2'
@@ -117,14 +117,14 @@ module.exports = {
             await client.query('COMMIT')
 
             if (rowCount === 0) {
-                return res.status(404).json({ message: 'Budget not found' })
+                return res.status(404).json({ error: 'Budget not found' })
             }
 
             return res.status(200).json({ message: 'Budget successfully deleted', budget: rows[0] })
         } catch (error) {
             await client.query('ROLLBACK')
             console.error(error)
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         } finally {
             client.release()
         }
@@ -135,7 +135,7 @@ module.exports = {
 
         try {
             if (!req.session.user) {
-                return res.status(404).json({ message: 'User not authorized' })
+                return res.status(404).json({ error: 'User not authorized' })
             }
 
             const userId = req.session.user.id
@@ -149,7 +149,7 @@ module.exports = {
 
             if (budgetResult.rowCount === 0) {
                 await client.query('ROLLBACK');
-                return res.status(404).json({ message: 'Budget not found' })
+                return res.status(404).json({ error: 'Budget not found' })
             }
             const amount_limit = budgetResult.rows[0].amount_limit
 
@@ -164,7 +164,7 @@ module.exports = {
         } catch (error) {
             await client.query('ROLLBACK')
             console.error(error)
-            return res.status(500).json({ message: 'Internal server error', error: error.message })
+            return res.status(500).json({ error: 'Internal server error', message: error.message })
         } finally {
             client.release()
         }
@@ -174,7 +174,7 @@ module.exports = {
 
         try {
             if (!req.session.user) {
-                return res.status(401).json({message: 'User not authorized'})
+                return res.status(401).json({error: 'User not authorized'})
             }
 
             const userId = req.session.user.id
@@ -209,7 +209,7 @@ module.exports = {
             return res.status(200).json({ budgets: enrichedBudgets})
         } catch (error) {
             await client.query('ROLLBACK')
-            return res.status(500).json({ message: 'Internal server error', error: error.message})
+            return res.status(500).json({ error: 'Internal server error', message: error.message})
         } finally {
             client.release()
         }
