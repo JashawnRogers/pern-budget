@@ -204,7 +204,12 @@ const TransactionsPage = () => {
             </h2>
             <form onSubmit={handleCreateTransaction} method='post' className='grid items-center gap-4'>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
-                    <label htmlFor='amount'>Amount:</label>
+                    <label 
+                        htmlFor='amount'
+                        className='block text-sm text-right font-medium text-gray-700 mb-1'
+                    >
+                        Amount:
+                    </label>
                     <input
                         id='amount' 
                         type='number'
@@ -212,13 +217,18 @@ const TransactionsPage = () => {
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         required
-                        className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] p-3'
+                        className='w-3/4 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#528265] focus:border-transparent'
                     />
                 </div>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
-                    <label htmlFor='category'>Budget Category:</label>
+                    <label 
+                        htmlFor='category'
+                        className='block text-sm text-right font-medium text-gray-700 mb-1'
+                    >
+                        Budget Category:
+                    </label>
                     <select 
-                        className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'
+                        className='w-3/4 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#528265] focus:border-transparent'
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
                         required
@@ -232,32 +242,57 @@ const TransactionsPage = () => {
                     </select>
                 </div>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
-                    <label htmlFor='vendor'>Vendor:</label>
+                    <label 
+                        htmlFor='vendor'
+                        className='block text-sm text-right font-medium text-gray-700 mb-1'
+                    >
+                        Vendor:
+                    </label>
                     <input
                         id='vendor'
                         type='text' 
                         value={vendor}
                         onChange={(e) => setVendor(e.target.value)}
                         required
-                        className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] p-3'
+                        className='w-3/4 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#528265] focus:border-transparent'
                     />
                 </div>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
-                    <label htmlFor='createdAt'>Date of transaction:</label>
+                    <label 
+                        htmlFor='createdAt'
+                        className='block text-sm text-right font-medium text-gray-700 mb-1'
+                    >
+                        Date of transaction:
+                    </label>
                     <input
                         id='createdAt'
                         type='date'
                         value={created_at}
                         onChange={(e) => setCreated_at(e.target.value)}
-                        className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] p-3'
+                        className='w-3/4 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#528265] focus:border-transparent'
                     />
                 </div>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
-                    <label htmlFor='description'>Description:</label>
-                    <textarea name='description' id='description' onChange={(e) => setDescription(e.target.value)} className='outline outline-black outline-solid rounded-3xl p-3 w-[350px] ml-3'></textarea>
+                    <label 
+                        htmlFor='description'
+                        className='block text-sm text-right font-medium text-gray-700 mb-1'
+                    >
+                        Description:
+                    </label>
+                    <textarea 
+                        name='description' 
+                        id='description' 
+                        onChange={(e) => setDescription(e.target.value)} 
+                        className='w-3/4 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#528265] focus:border-transparent'
+                    />
                 </div>
 
-                <Button type='submit' className='bg-[#528265]! text-white w-fit place-self-center my-5'>Complete</Button>
+                <Button 
+                    type='submit' 
+                    className='w-1/2 mx-auto my-4 py-2 !bg-[#528265] text-white rounded-lg text-lg font-semibold transition-colors'
+                >
+                    Complete
+                </Button>
             </form>
         </Modal>
         <ConfirmDialog

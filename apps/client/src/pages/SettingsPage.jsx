@@ -20,8 +20,9 @@ const SettingsPage = () => {
     const navigate = useNavigate()
     const passwordPhraseToDeleteAccount = 'I am super sure I am deleting my account.'
 
-    const settingsCard = 'flex flex-col gap-4 w-full max-w-sm bg-white shadow-md p-6 rounded-xl border border-gray-200'
-    const settingsInput = 'rounded-3xl h-10 w-full pl-4 border border-gray-300 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500'
+    const settingsCard = 'flex flex-col gap-4 w-full max-w-sm h-fit bg-white shadow-md p-6 rounded-xl border border-gray-200'
+    const settingsInput = 'w-3/4 mx-auto rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#528265] focus:border-transparent'
+    const submitButtonStyle = 'w-1/2 mx-auto my-4 py-2 !bg-[#528265] text-white rounded-lg text-lg font-semibold transition-colors'
 
     const closeModal = () => {
         setIsModalOpen(false)
@@ -157,8 +158,13 @@ const SettingsPage = () => {
         <div className='grid grid-cols-1 md:grid-cols-3 md:grid-rows-3 gap-8 max-w-6xl mx-auto'>
             
             {/* Upload Profile Picture */}
-            <form className={`${settingsCard} md:row-span-2`} onSubmit={handleImageUpload}>
-                <label htmlFor='profileImage' className='text-lg font-medium'>Upload Profile Picture:</label>
+            <form className={`${settingsCard}`} onSubmit={handleImageUpload}>
+                <label 
+                    htmlFor='profileImage' 
+                    className='text-lg font-medium'
+                >
+                    Upload Profile Picture:
+                </label>
                 <input 
                     type='file'
                     name='profileImage'
@@ -173,7 +179,7 @@ const SettingsPage = () => {
                     </div>
                 )}
 
-                <Button type='submit' className='w-full mt-2 bg-[#528265]! text-white'>Upload</Button>
+                <Button type='submit' className={submitButtonStyle}>Upload</Button>
             </form>
             
             {/* Change Profile Name */}
@@ -186,7 +192,7 @@ const SettingsPage = () => {
                     className={settingsInput}
                     onChange={(e) => setName(e.target.value)}
                 />
-                <Button type='submit' className='w-full mt-2 bg-[#528265]! text-white'>Change name</Button>
+                <Button type='submit' className={submitButtonStyle}>Change name</Button>
             </form>
 
             {/* Change Password */}
@@ -199,7 +205,7 @@ const SettingsPage = () => {
                     className={settingsInput}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button type='submit' className='w-full mt-2 bg-[#528265]! text-white'>Change Password</Button>
+                <Button type='submit' className={`${submitButtonStyle} !w-3/4`}>Change Password</Button>
             </form>
 
             {isModalOpen && (
@@ -215,13 +221,13 @@ const SettingsPage = () => {
                             className={`${settingsInput} w-3/4`}
                         />
                         {error && <p className='text-red-500 text-sm'>{error}</p>}
-                        <Button type='submit' className='bg-[#528265]! text-white w-1/2'>Confirm</Button>
+                        <Button type='submit' className={submitButtonStyle}>Confirm</Button>
                     </form>
                 </Modal>
             )}
 
             {/* Delete Account */}
-            <form onSubmit={handleDeleteAccount} className='flex flex-col gap-4 w-full bg-white shadow-md p-6 rounded-xl border border-gray-200 items-center md:col-span-2'>
+            <form onSubmit={handleDeleteAccount} className='flex flex-col gap-4 w-full bg-white shadow-md p-6 rounded-xl border border-gray-200 items-center md:col-start-2 md:col-span-2'>
                 <p className="text-lg font-medium text-red-600 mb-2">Danger Zone</p>
                 <p className="text-lg font-medium mb-2">Enter phrase: '<span className='font-bold'>{passwordPhraseToDeleteAccount}</span>'</p>
                 <input 
@@ -230,11 +236,11 @@ const SettingsPage = () => {
                     onChange={e => setDeleteAccount(e.target.value)}
                     className={settingsInput}
                 />         
-                <Button type='submit' className='!bg-red-500 text-white w-full'>Delete Account</Button>
+                <Button type='submit' className={submitButtonStyle}>Delete Account</Button>
             </form>
 
             {/* Change Email */}
-            <form className={settingsCard} onSubmit={handleUpdateEmail}>
+            <form className={`${settingsCard} md:col-start-1 md:row-start-2`} onSubmit={handleUpdateEmail}>
                 <label htmlFor='email' className='text-lg'>Change email:</label>
                 <input 
                     type='email'
@@ -243,7 +249,7 @@ const SettingsPage = () => {
                     className={settingsInput}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <Button type='submit' className='w-full mt-2 bg-[#528265]! text-white'>Change name</Button>
+                <Button type='submit' className={submitButtonStyle}>Change name</Button>
             </form>    
         </div>
     </div>

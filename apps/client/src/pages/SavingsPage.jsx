@@ -151,37 +151,45 @@ const SavingsPage = () => {
             </div>
         </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
+            <h2 className='text-3xl text-center mb-8'>
+                {selectedGoal ? 'Edit Goal' : 'Create New Goal'}
+            </h2>
             <form onSubmit={handleCreateSavingsGoal} method="post" className='grid items-center gap-4'>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
                   <label 
                     htmlFor="title" 
-                    className='text-right'>Title:
+                    className='block text-sm text-right font-medium text-gray-700 mb-1'
+                  >
+                    Title:
                   </label>
                     <input 
                       type="text" 
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       required
-                      className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'
+                      className='w-3/4 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#528265] focus:border-transparent'
                     />
                 </div>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
                   <label 
                     htmlFor="max-amount" 
-                    className='text-right'>Target Amount:</label>
+                    className='block text-sm text-right font-medium text-gray-700 mb-1'
+                  >
+                    Target Amount:
+                  </label>
                   <input 
                     type="number" 
                     step='0.01'
                     value={targetAmount}
                     onChange={(e) => setTargetAmount(e.target.value)}
                     required
-                    className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'
+                    className='w-3/4 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#528265] focus:border-transparent'
                   />
               </div>
               <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
                 <label
                   htmlFor='current-amount'
-                  className='text-right'
+                  className='block text-sm text-right font-medium text-gray-700 mb-1'
                 >
                   Current Amount:
                 </label>
@@ -191,11 +199,16 @@ const SavingsPage = () => {
                   value={currentAmount}
                   required
                   onChange={(e) => setCurrentAmount(e.target.value)}
-                  className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'
+                  className='w-3/4 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#528265] focus:border-transparent'
                 />
               </div>
 
-            <Button type='submit' className='bg-[#528265]! text-white w-fit place-self-center my-5'>Complete</Button>
+            <Button 
+              type='submit' 
+              className='w-1/2 my-4 mx-auto py-2 !bg-[#528265] text-white rounded-lg text-lg font-semibold transition-colors'
+            >
+              Complete
+            </Button>
           </form>
         </Modal>
 
