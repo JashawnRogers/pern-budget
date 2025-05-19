@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Button from '../utils/Button'
+import heroImage from '../../assets/hero-img.png'
 
 const Hero = () => {
   return (
@@ -16,8 +17,12 @@ const Hero = () => {
                 <Button className='mt-3'>Get Started</Button>
             </Link>
         </div>
-        <div className='w-[750px] h-[650px] flex my-0 mx-auto justify-center mt-6 bg-gradient-to-b from-white to-gray-100 rounded-2xl shadow-md border border-gray-300'>
-            <h1 className='text-center'>Placeholder for pic</h1>
+        <div className='w-[750px] aspect-[16/9] flex my-0 mx-auto justify-center mt-6 bg-gradient-to-b from-white to-gray-100 rounded-2xl shadow-md border border-gray-300'>
+            <img 
+                src={heroImage} 
+                alt='Snippet of dashbaord screen'
+                className='object-contain w-full h-full rounded-2xl'
+            />
         </div>
     </section>
   )

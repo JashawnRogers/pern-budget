@@ -34,9 +34,6 @@ const HowItWorks = () => {
                     <p className='montesserat-300 leading-7 mt-3'>Adjust your budget as needed for optimal financial health.</p>
                 </div>
             </Card>
-            <Card className='w-[1435px] h-[700px] mt-5'>
-                <p>Placeholder for pic</p>
-            </Card>
         </div>
     </section>
   )
