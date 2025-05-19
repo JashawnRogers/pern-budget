@@ -18,6 +18,7 @@ export const getDate = () => {
         break;
         case 4:
             month = 'May';
+            break;
         case 5:
             month = 'June'
         break;
