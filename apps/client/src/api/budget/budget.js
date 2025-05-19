@@ -57,3 +57,23 @@ export const deleteBudget = async (budget_id) => {
         throw new Error(error.message || 'Server failed to delete budget')
     }
 }
+
+export const updateBudget = async ({ category, amount_limit, budget_id }) => {
+    try {
+        const res = await fetch(`${BASE_URL}/update`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ category, amount_limit, budget_id })
+        }) 
+
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || 'Failed to update budget')
+        }
+
+        return await res.json()
+    } catch (error) {
+        throw new Error(error.message || 'Server failed to update budget')
+    }
+}

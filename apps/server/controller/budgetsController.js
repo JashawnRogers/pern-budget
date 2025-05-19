@@ -46,7 +46,7 @@ module.exports = {
                 return res.status(401).json({ message: 'User not authorized' })
             }
 
-            const { category, amount_limit, budgetId } = req.body
+            const { category, amount_limit, budget_id } = req.body
             const userId = req.session.user.id
 
             if (category === undefined && limit === undefined) {
@@ -57,7 +57,7 @@ module.exports = {
 
             const budgetCheck = await client.query(
                 'SELECT * FROM user_budgets WHERE budget_id = $1 AND user_id = $2', 
-                [budgetId, userId]
+                [budget_id, userId]
             )
 
             if (budgetCheck.rowCount === 0) {
@@ -72,11 +72,11 @@ module.exports = {
             WHERE budget_id = $3 AND user_id = $4 
             RETURNING *;
             `
-            const queryValues = [category || null, amount_limit || null, budgetId, userId]
+            const queryValues = [category || null, amount_limit || null, budget_id, userId]
 
             const result = await client.query(updateQuery, queryValues)
             await client.query('COMMIT')
-
+            console.log(result.rows[0])
             return res.status(200).json({ message: 'Successfully updated budget', budget: result.rows[0]})
         } catch (error) {
             await client.query('ROLLBACK')

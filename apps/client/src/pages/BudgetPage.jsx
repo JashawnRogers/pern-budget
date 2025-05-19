@@ -6,22 +6,24 @@ import { createBudget, getAllBudgets, deleteBudget } from '../api/budget/budget'
 import DataTable from '../components/utils/DataTable'
 import { MdDeleteForever } from 'react-icons/md'
 import { toast } from 'react-hot-toast'
+import { updateBudget } from '../api/budget/budget'
 
 const Budget = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [budgets, setBudgets] = useState([])
-    const categoryRef = useRef()
-    const amountLimitRef = useRef()
+    const [selectedBudget, setSelectedBudget] = useState(null)
+    const [category, setCategory] = useState('')
+    const [amountLimit, setAmountLimit] = useState('')
 
     // Total Spent column does not calculate total spent - likely comes back as undefined
     const columns = [
         { label: 'Name', accessor: 'category' },
-        { label: 'Budget Limit', render: item => `$${item.amount_limit}` },
+        { label: 'Budget Limit', render: item => `$${item.amount_limit.toFixed(2)}` },
         { label: 'Total Spent', render: item => (
             <span>
                 <span>$</span>
                  <span className={item.total_spent > item.amount_limit && 'text-red-500'}>
-                    {item.total_spent}
+                    {item.total_spent.toFixed(2)}
                 </span>
             </span>
         ) },
@@ -49,28 +51,54 @@ const Budget = () => {
         fetchAllBudgets()
     }, [])
 
+    useEffect(() => {
+        if (isModalOpen) {
+          if (selectedBudget) {
+            setCategory(selectedBudget.category)
+            setAmountLimit(selectedBudget.amount_limit)
+          } else {
+            setCategory('')
+            setAmountLimit('')
+          }
+        }
+      }, [isModalOpen ,selectedBudget])
+
     const openModal = () => {
         setIsModalOpen(true)
     }
 
     const closeModal = () => {
         setIsModalOpen(false)
+        setSelectedBudget(null)
     }
 
     const handleCreateBudget = async (e) => {
         e.preventDefault()
-        const category = categoryRef.current.value
-        const amount_limit = amountLimitRef.current.value
+        const parsedAmountLimit = parseFloat(amountLimit)
 
-        const data = {category, amount_limit}
+        if (!category || isNaN(parsedAmountLimit) || parsedAmountLimit < 0) {
+            toast.error('Please enter a valid positive number for amount.')
+            return
+        }
+
+        const data = {category, amount_limit: parsedAmountLimit}
 
         try {
-            await createBudget(data)
+            if (selectedBudget) {
+                await updateBudget({ ...data, budget_id: selectedBudget.budget_id })
+                toast.success('Successfully updated your budget!')
+            } else {
+                await createBudget(data)
+                toast.success('Successfully created budget!')
+            }
+
             const newBudgets = await getAllBudgets()
             setBudgets(newBudgets)
-            categoryRef.current.value = ''
-            amountLimitRef.current.value = ''
-            toast.success('Successfully created budget!')
+
+            setCategory('')
+            setAmountLimit('')
+            setSelectedBudget(null)
+
             closeModal()
         } catch (error) {
             toast.error(error.message || "Something's acting up.. My bad")
@@ -89,6 +117,10 @@ const Budget = () => {
                 {budgets ? <DataTable 
                     columns={columns}
                     data={budgets}
+                    onRowClick={(budget) => {
+                        setSelectedBudget(budget)
+                        setIsModalOpen(true)
+                    }}
                     styleConfig={{
                         header: 'bg-green-100 text-green-900',
                         row: 'hover:bg-green-50',
@@ -99,12 +131,16 @@ const Budget = () => {
             </div>
         </div>
         <Modal isOpen={isModalOpen} onClose={closeModal}>
+            <h2 className='text-3xl text-center mb-8'>
+                {selectedBudget ? 'Edit Budget' : 'Create New Budget'}
+            </h2>
             <form onSubmit={handleCreateBudget} method="post" className='grid items-center gap-4'>
                 <div className='grid grid-cols-[150px_1fr] items-center gap-x-4'>
                     <label htmlFor="category" aria-placeholder='Shopping, Utilites, Vacation...' className='text-right'>Category:</label>
                     <input 
                         type="text" 
-                        ref={categoryRef}
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
                         required
                         className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'
                     />
@@ -114,7 +150,8 @@ const Budget = () => {
                     <input 
                         type="number" 
                         step='0.01'
-                        ref={amountLimitRef}
+                        value={amountLimit}
+                        onChange={(e) => setAmountLimit(e.target.value)}
                         required
                         className='outline outline-black outline-solid ml-3 rounded-3xl h-[40px] w-[350px] pl-3'
                     />
