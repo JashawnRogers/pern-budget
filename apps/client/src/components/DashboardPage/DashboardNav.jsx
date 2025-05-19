@@ -46,7 +46,7 @@ const DashboardNav = () => {
                 </NavLink>
             </li>
             <li>
-                <NavLink>
+                <NavLink to='/settings'>
                     {
                         user.profile_image ? (
                             <img 

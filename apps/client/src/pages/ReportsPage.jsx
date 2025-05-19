@@ -30,7 +30,6 @@ const ReportsPage = () => {
             try {
                 const data = await getAllSavingsGoals()
                 setSavingsData(data)
-                console.log(data)
             } catch (error) {
                 toast.error('Failed to fetch savings goals')
             }

@@ -13,7 +13,6 @@ const SettingsPage = () => {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [email, setEmail] = useState('')
-    const [error, setError] = useState('')
     const [deleteAccount, setDeleteAccount] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false)
     const { user, setUser } = useAuth()
@@ -42,7 +41,7 @@ const SettingsPage = () => {
             toast.success('Profile image successfully updated')
             setPreview(null)
         } catch (error) {
-            toast.error(error.error)
+            toast.error(error.message)
         }
     }
 
@@ -71,13 +70,12 @@ const SettingsPage = () => {
         }
 
         try {
-            setError('')
             const { user } = await updateName({ name })
             setUser(user)
             toast.success('Profile name successfully updated')
             setName('')
         } catch (error) {
-            toast.error(error.error)
+            toast.error(error.message)
         }
     }
 
@@ -99,7 +97,6 @@ const SettingsPage = () => {
         }
 
         try {
-            setError('')
             const { user } = await updatePassword({ password })
             setUser(user)
             setIsModalOpen(false)
@@ -143,7 +140,6 @@ const SettingsPage = () => {
         }
 
         try {
-            setError('')
             const { user } = await updateEmail({ email })
             setUser(user)
             toast.success('Email successfully updated')

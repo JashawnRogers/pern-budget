@@ -53,7 +53,7 @@ const SavingsPage = () => {
         const data = await getAllSavingsGoals()
         setSavings(data.savings_goals)
       } catch (error) {
-        toast.error(error.error)
+        toast.error(error.message)
       }
     }
 
@@ -86,25 +86,38 @@ const SavingsPage = () => {
       return
     }
 
-    try {
-      if (selectedGoal) {
-        await updateSavingsGoal({
+    
+    if (selectedGoal) {
+      await toast.promise(
+        updateSavingsGoal({
           savings_id: selectedGoal.savings_id,
           title,
           target_amount: parsedTargetAmount,
           current_amount: parsedCurrentAmount
-        })
-        toast.success('Successfully updated savings goal!')
-      } else {
-        await createSavingsGoal({ title, target_amount: parsedTargetAmount, current_amount: parsedCurrentAmount })
-        toast.success('Successfully created savings goal!')
-      }
+        }),
+        {
+          loading: 'Updating savings goal...',
+          success: 'Successfully updated savings goal!',
+          error: (error) => error.message || 'Something went wrong'
+        }
+      )
+    } else {
+      await toast.promise(
+        createSavingsGoal({ title, target_amount: parsedTargetAmount, current_amount: parsedCurrentAmount }),
+        {
+          loading: 'Creating savings goal...',
+          success: 'Successfully created savings goal!',
+          error: (error) => error.message || 'Something went wrong'
+        }
+      )
+    }
 
+    try {
       const updatedGoals = await getAllSavingsGoals()
       setSavings(updatedGoals.savings_goals)
       closeModal()
-    } catch(error) {
-      toast.error(error.error)
+    } catch (error) {
+      toast.error(error.message)
     }
   }
 
@@ -116,7 +129,7 @@ const SavingsPage = () => {
         </div>
         <div className='min-h-[30vh] content-center'>
           <div className='flex gap-x-4'>
-            <Button className='!bg-[#528265] cursor-pointer flex gap-x-2 text-3xl text-white shadow-md montesserat-300' onClick={openModal}>Create new savings goal <GoPlus className='mt-1'/></Button>
+            <Button className='!bg-[#528265] cursor-pointer flex gap-x-2 text-3xl text-white shadow-md montesserat-300' onClick={openModal}>Create New Savings Goal <GoPlus className='mt-1'/></Button>
           </div>
         </div>
         <div className='min-w-1/2 min-h-[55vh]'>

@@ -17,7 +17,7 @@ const AuthForm = ({ isRegistering, onSubmit }) => {
       return
     }
 
-    if (password.length < 8) {
+    if (isRegistering && password.length < 8) {
       onSubmit(null, 'Password must be at least 8 characters.')
       return
     }

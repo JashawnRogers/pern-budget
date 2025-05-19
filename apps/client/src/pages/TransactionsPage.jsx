@@ -35,7 +35,7 @@ const TransactionsPage = () => {
                 const data = await getAllBudgets()
                 setBudgets(data)
             } catch (error) {
-                toast.error(error.error)
+                toast.error(error.message)
             }
         }
 
@@ -44,7 +44,7 @@ const TransactionsPage = () => {
                 const data = await getTransactions()
                 setTransactions(data)
             } catch (error) {
-                toast.error(error.error)
+                toast.error(error.message)
             }
         }
         fetchAllBudgets()
@@ -91,14 +91,27 @@ const TransactionsPage = () => {
 
         const data = {amount, category, description, vendor, created_at}
 
-        try {
-            if (selectedTransaction) {
-                await updateTransaction({amount, category, description, vendor, id: selectedTransaction.id})
-                toast.success('Successfully updated transaction!')
-            } else {
-                await createTransaction(data)
-                toast.success('Successfully created transaction!')
+    
+        if (selectedTransaction) {
+            await toast.promise(
+                updateTransaction({amount, category, description, vendor, id: selectedTransaction.id}),
+                {
+                    loading: 'Updating transaction...',
+                    success: 'Successfully updated transaction!',
+                    error: (error) => error.message || 'Something went wrong'
+                }
+            )
+        } else {
+            await toast.promise(
+                createTransaction(data),
+                {
+                    loading: 'Creating transaction...',
+                    success: 'Successfully created transaction!',
+                    error: (error) => error.message || 'Something went wrong'
+                }
+            ) 
             }
+        try {
             const newTransactions = await getTransactions()
             setTransactions(newTransactions)
 
