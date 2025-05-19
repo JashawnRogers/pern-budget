@@ -146,19 +146,22 @@ const TransactionsPage = () => {
                setTransactions(updatedTransactions)
             }
         }} 
-        className='hover:cursor-pointer'><MdDeleteForever className='h-[30px] w-[30px]' /></button>}
+        className='hover:cursor-pointer'><MdDeleteForever className='h-[30px] w-[30px] text-red-500' /></button>}
     ]
 
   return (
     <>
-        <div className='flex flex-col items-center gapy-y-32 justify-center max-h-[40vh] static'>
+        <div className='flex flex-col items-center gapy-y-12 justify-center max-h-[40vh] static'>
+            <div className='mt-12'>
+                <h2 className='text-5xl montesserat-400 text-white'>Transactions</h2>
+            </div>
             <div className='min-h-[30vh] content-center'>
                 <div className='flex gap-x-4'>
-                    <Button className='cursor-pointer flex gap-x-2 text-3xl montesserat-300' onClick={openModal}>Create new transaction <GoPlus className='mt-1' /></Button>
+                    <Button className='!bg-[#528265] cursor-pointer flex gap-x-2 text-3xl text-white shadow-md montesserat-300' onClick={openModal}>Create New Transaction <GoPlus className='mt-1' /></Button>
                 </div>
             </div>
         </div>
-        <div className='flex justify-center min-w-3/4 max-h-[55vh]'>
+        <div className='flex justify-center min-w-3/4'>
             { transactions ? 
                 <DataTable 
                     columns={columns}
@@ -168,7 +171,7 @@ const TransactionsPage = () => {
                         setIsModalOpen(true)
                     }}
                     styleConfig={{
-                        header: 'bg-green-100 text-green-900',
+                        header: '',
                         row: 'hover:bg-green-50',
                         cell: 'text-sm',
                         table: 'rounded-lg shadow-md'

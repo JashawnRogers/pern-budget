@@ -10,7 +10,7 @@ const DataTable = ({ columns, data, styleConfig = {}, onRowClick }) => {
 
     return (
         <div className="overflow-x-auto">
-          <table className={`min-w-full table-auto border border-gray-300 text-center ${table}`}>
+          <table className={`min-w-full table-auto bg-white text-center ${table}`}>
             <thead className={`${header}`}>
               <tr>
                 {columns.map((col, idx) => (
@@ -23,7 +23,7 @@ const DataTable = ({ columns, data, styleConfig = {}, onRowClick }) => {
             <tbody>
               {data.length > 0 ? (
                 data.map((item, idx) => (
-                  <tr key={idx} onClick={() => onRowClick(item)} className={`${idx === data.length - 1 ? 'border-0' : ''}  ${row}`}>
+                  <tr key={idx} onClick={() => onRowClick(item)} className={`${row}`}>
                     {columns.map((col, colIdx) => (
                       <td key={colIdx} className={`px-4 py-2 border-b ${cell}`}>
                         {col.render ? col.render(item) : item[col.accessor]}

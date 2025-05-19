@@ -187,7 +187,7 @@ const DashboardContent = () => {
                                 columns={TransactionColumns}
                                 data={transactions}
                                 styleConfig={{
-                                    header: 'bg-green-100 text-green-900',
+                                    header: 'border',
                                     row: 'hover:bg-green-50',
                                     cell: 'text-sm',
                                     table: 'rounded-lg'
@@ -214,7 +214,7 @@ const DashboardContent = () => {
                                     columns={SavingsColumns}
                                     data={savingsGoals}
                                     styleConfig={{
-                                        header: 'bg-green-100 text-green-900',
+                                        header: 'border',
                                         row: 'hover:bg-green-50',
                                         cell: 'text-sm',
                                         table: 'rounded-lg'
