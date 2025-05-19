@@ -37,12 +37,18 @@ const SettingsPage = () => {
        }
 
         try {
-            const { user } = await uploadProfilePic(profileImage)
+            const { user } = await toast.promise(
+                uploadProfilePic(profileImage),
+                {
+                    loading: 'Loading...',
+                    success: 'Profile image successfully updated!',
+                    error: (error) => error.message || 'Something went wrong'
+                }
+            )
             setUser(user) // updating the user context
-            toast.success('Profile image successfully updated')
             setPreview(null)
         } catch (error) {
-            toast.error(error.message)
+            console.log(error.error)
         }
     }
 
@@ -71,12 +77,18 @@ const SettingsPage = () => {
         }
 
         try {
-            const { user } = await updateName({ name })
+            const { user } = await toast.promise(
+                updateName({ name }),
+                {
+                    loading: 'Loading...',
+                    success: 'Profile name successfully updated!',
+                    error: (error) => error.message || 'Something went wrong'
+                }
+            ) 
             setUser(user)
-            toast.success('Profile name successfully updated')
             setName('')
         } catch (error) {
-            toast.error(error.message)
+            console.log(error.error)
         }
     }
 
@@ -98,14 +110,20 @@ const SettingsPage = () => {
         }
 
         try {
-            const { user } = await updatePassword({ password })
+            const { user } = await toast.promise(
+                updatePassword({ password }),
+                {
+                    loading: 'Loading...',
+                    success: 'Password successfully updated!',
+                    error: (error) => error.message || 'Something went wrong'
+                }
+            )
             setUser(user)
             setIsModalOpen(false)
-            toast.success('Password successfully updated')
             setPassword('')
             setConfirmPassword('')
         } catch (error) {
-            toast.error(error.error)
+            console.log(error.error)
         }
     }
 
@@ -118,12 +136,17 @@ const SettingsPage = () => {
         }
 
         try {
-            setError('')
-            await deleteUserAccount(user.id)
-            alert('Profile deleted successfully')
+            await toast.promise(
+                deleteUserAccount(user.id),
+                {
+                    loading: 'Loading...',
+                    success: 'Profile deleted successfully!',
+                    error: (error) => error.message || 'Something went wrong'
+                }
+            )
             navigate('/')
         } catch (error) {
-            toast.error(error.error)
+            console.log(error.error)
         }
     }
 
@@ -141,13 +164,18 @@ const SettingsPage = () => {
         }
 
         try {
-            const { user } = await updateEmail({ email })
+            const { user } = await toast.promise(
+                updateEmail({ email }),
+                {
+                    loading: 'Loading...',
+                    success: 'Email successfully updated!',
+                    error: (error) => error.message || 'Something went wrong'
+                }
+            )
             setUser(user)
-            toast.success('Email successfully updated')
             setEmail('')
         } catch (error) {
-            console.error(error)
-            setError(error.error)
+            console.log(error.error)
         }
     }
 
@@ -220,7 +248,6 @@ const SettingsPage = () => {
                             required
                             className={`${settingsInput} w-3/4`}
                         />
-                        {error && <p className='text-red-500 text-sm'>{error}</p>}
                         <Button type='submit' className={submitButtonStyle}>Confirm</Button>
                     </form>
                 </Modal>
