@@ -5,6 +5,7 @@ import Button from '../components/utils/Button'
 import { createSavingsGoal, getAllSavingsGoals, updateSavingsGoal, deleteSavingsGoal } from '../api/savings/savings'
 import DataTable from '../components/utils/DataTable'
 import { MdDeleteForever } from 'react-icons/md'
+import { toast } from 'react-hot-toast'
 
 const SavingsPage = () => {
   const [error, setError] = useState(null)
@@ -52,7 +53,7 @@ const SavingsPage = () => {
         const data = await getAllSavingsGoals()
         setSavings(data.savings_goals)
       } catch (error) {
-        setError(error.message)
+        toast.error(error.error)
       }
     }
 
@@ -81,11 +82,11 @@ const SavingsPage = () => {
     const parsedCurrentAmount = parseFloat(currentAmount)
 
     if (!title || isNaN(parsedTargetAmount)) {
-      setError('Title and amount are required')
+      toast.error('Title and amount are required')
+      return
     }
 
     try {
-      setError(null)
       if (selectedGoal) {
         await updateSavingsGoal({
           savings_id: selectedGoal.savings_id,
@@ -93,25 +94,22 @@ const SavingsPage = () => {
           target_amount: parsedTargetAmount,
           current_amount: parsedCurrentAmount
         })
+        toast.success('Successfully updated savings goal!')
       } else {
         await createSavingsGoal({ title, target_amount: parsedTargetAmount, current_amount: parsedCurrentAmount })
+        toast.success('Successfully created savings goal!')
       }
 
       const updatedGoals = await getAllSavingsGoals()
       setSavings(updatedGoals.savings_goals)
       closeModal()
     } catch(error) {
-      setError(error.message || "Something's acting up.. My bad")
+      toast.error(error.error)
     }
   }
 
   return (
     <>
-      {error && (
-        <div className="col-span-full bg-red-100 text-red-800 p-4 rounded-lg border border-red-300">
-          <strong>Error:</strong> {error}
-        </div>
-      )}
       <div className='flex flex-col items-center gap-y-32 justify-center min-h-[60vh] static'>
         <div className='min-h-[30vh] content-center'>
           <div className='flex gap-x-4'>

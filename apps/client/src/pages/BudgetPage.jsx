@@ -45,7 +45,7 @@ const Budget = () => {
                 const data = await getAllBudgets()
                 setBudgets(data)
             } catch (error) {
-                toast.error(error.message)
+                toast.error(error.error)
             }
         }
         fetchAllBudgets()
@@ -101,7 +101,7 @@ const Budget = () => {
 
             closeModal()
         } catch (error) {
-            toast.error(error.message || "Something's acting up.. My bad")
+            toast.error(error.error || "Something's acting up.. My bad")
         }
     }
 

@@ -35,7 +35,7 @@ const TransactionsPage = () => {
                 const data = await getAllBudgets()
                 setBudgets(data)
             } catch (error) {
-                toast.error(error.message)
+                toast.error(error.error)
             }
         }
 
@@ -44,7 +44,7 @@ const TransactionsPage = () => {
                 const data = await getTransactions()
                 setTransactions(data)
             } catch (error) {
-                toast.error(error.message)
+                toast.error(error.error)
             }
         }
         fetchAllBudgets()
@@ -108,7 +108,7 @@ const TransactionsPage = () => {
             setDescription('')
             closeModal()
         } catch (error) {
-            toast.error(error.message || "Something's acting up.. My bad")
+            toast.error(error.error || "Something's acting up.. My bad")
         }
     }
 

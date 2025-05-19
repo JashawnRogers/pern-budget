@@ -31,7 +31,7 @@ const AuthPage = () => {
       setUser(userData.user)
       navigate('/dashboard')
     } catch (error) {
-      toast.error(error.message || 'Authentication failed')
+      toast.error(error.error || 'Authentication failed')
     }
   }
 

@@ -4,6 +4,7 @@ import Modal from '../components/utils/Modal'
 import { uploadProfilePic, updateName, updatePassword, deleteUserAccount, updateEmail } from '../api/settings/settings'
 import { useAuth } from '../api/auth/authContext'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
 
 const SettingsPage = () => {
     const [preview, setPreview] = useState(null)
@@ -31,18 +32,17 @@ const SettingsPage = () => {
         e.preventDefault()
 
        if (!profileImage) {
-            setError('Please select an image first')
+            toast.error('Please select an image first')
             return
        }
 
         try {
             const { user } = await uploadProfilePic(profileImage)
             setUser(user) // updating the user context
-            alert('Profile image successfully updated')
+            toast.success('Profile image successfully updated')
             setPreview(null)
         } catch (error) {
-            console.error(error)
-            setError(error.message)
+            toast.error(error.error)
         }
     }
 
@@ -52,7 +52,6 @@ const SettingsPage = () => {
             const fileURL = URL.createObjectURL(file)
             setProfileImage(file)
             setPreview(fileURL)
-            setError('')
         } else {
             setPreview(null)
         }
@@ -62,12 +61,12 @@ const SettingsPage = () => {
         e.preventDefault()
 
         if (!name) {
-            setError('Please enter a name')
+            toast.error('Please enter a name')
             return
         }
 
         if (name === user.name) {
-            setError('Please provide a new name')
+            toast.error('Please provide a new name')
             return
         }
 
@@ -75,17 +74,19 @@ const SettingsPage = () => {
             setError('')
             const { user } = await updateName({ name })
             setUser(user)
-            alert('Profile name successfully updated')
+            toast.success('Profile name successfully updated')
             setName('')
         } catch (error) {
-            console.error(error)
-            setError(error.message)
+            toast.error(error.error)
         }
     }
 
     const handleUpdatePassword = (e) => {
         e.preventDefault()
-        if (!password) return
+        if (!password) {
+            toast.error('Please enter a password')
+            return
+        }
         setIsModalOpen(true)
     }
 
@@ -93,7 +94,7 @@ const SettingsPage = () => {
         e.preventDefault()
         
         if (password !== confirmPassword) {
-            setError('Passwords do not match')
+            toast.error('Passwords do not match')
             return
         }
 
@@ -102,12 +103,11 @@ const SettingsPage = () => {
             const { user } = await updatePassword({ password })
             setUser(user)
             setIsModalOpen(false)
-            alert('Password successfully updated')
+            toast.success('Password successfully updated')
             setPassword('')
             setConfirmPassword('')
         } catch (error) {
-            console.error(error)
-            setError(error.message)
+            toast.error(error.error)
         }
     }
 
@@ -115,7 +115,7 @@ const SettingsPage = () => {
         e.preventDefault()
 
         if (deleteAccount.trim() !== passwordPhraseToDeleteAccount) {
-            setError('Input does not match specified phrase')
+            toast.error('Input does not match specified phrase')
             return
         }
 
@@ -125,8 +125,7 @@ const SettingsPage = () => {
             alert('Profile deleted successfully')
             navigate('/')
         } catch (error) {
-            console.error(error)
-            setError(error.message)
+            toast.error(error.error)
         }
     }
 
@@ -134,12 +133,12 @@ const SettingsPage = () => {
         e.preventDefault()
 
         if (!email) {
-            setError('Please provide a email')
+            toast.error('Please provide a email')
             return
         }
 
         if (email === user.email) {
-            setError('Please provide a new email')
+            toast.error('Please provide a new email')
             return
         }
 
@@ -147,21 +146,16 @@ const SettingsPage = () => {
             setError('')
             const { user } = await updateEmail({ email })
             setUser(user)
-            alert('Email successfully updated')
+            toast.success('Email successfully updated')
             setEmail('')
         } catch (error) {
             console.error(error)
-            setError(error.message)
+            setError(error.error)
         }
     }
 
   return (
     <>
-    {error && (
-        <div className="col-span-full bg-red-100 text-red-800 p-4 rounded-lg border border-red-300">
-          <strong>Error:</strong> {error}
-        </div>
-    )}
     <div className='min-h-screen bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6'>
         <h1 className='montesserat-400 text-5xl mb-12 text-center text-white'>Settings</h1>
         <div className='grid grid-cols-1 md:grid-cols-3 md:grid-rows-3 gap-8 max-w-6xl mx-auto'>

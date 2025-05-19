@@ -3,6 +3,7 @@ import { getAllBudgets } from '../api/budget/budget'
 import { getAllSavingsGoals } from '../api/savings/savings'
 import BudgetPieChart from '../components/reportsPage/BudgetPieChart'
 import ProgressBar from '../components/reportsPage/ProgressBar'
+import { toast } from 'react-hot-toast'
 
 
 const sampleData = [
@@ -21,7 +22,7 @@ const ReportsPage = () => {
                 const data = await getAllBudgets()
                 setBudgetData(data)
             } catch (error) {
-                console.error('Failed to fetch budgets: ',error)
+                toast.error('Failed to fetch budgets')
             }
         }
 
@@ -31,7 +32,7 @@ const ReportsPage = () => {
                 setSavingsData(data)
                 console.log(data)
             } catch (error) {
-                
+                toast.error('Failed to fetch savings goals')
             }
         }
 
