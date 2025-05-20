@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import logo from '../../assets/logo-transparent.svg';
-import { Link as ScrollLink } from 'react-scroll';
-import { Link } from 'react-router-dom';
-import { HiMenuAlt3, HiX } from 'react-icons/hi';
-import Button from '../utils/Button';
+import { useState } from 'react'
+import logo from '../../assets/logo-transparent.svg'
+import { Link as ScrollLink } from 'react-scroll'
+import { Link } from 'react-router-dom'
+import { HiMenuAlt3, HiX } from 'react-icons/hi'
+import Button from '../utils/Button'
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <header className='sticky top-0 bg-[#528265] text-white z-50 shadow-sm'>
@@ -97,7 +97,7 @@ const Navbar = () => {
         )}
       </nav>
     </header>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

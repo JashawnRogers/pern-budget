@@ -33,19 +33,19 @@ const ReportsPage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white text-center font-bold montesserat-400 mb-12">
+    <div className='min-h-screen px-4 py-10 sm:px-6 lg:px-8'>
+      <h1 className='text-4xl sm:text-5xl lg:text-6xl text-white text-center font-bold montesserat-400 mb-12'>
         Reports
       </h1>
 
-      <div className="flex flex-col items-center justify-center space-y-12">
-        <div className="w-full max-w-4xl">
+      <div className='flex flex-col items-center justify-center space-y-12'>
+        <div className='w-full max-w-4xl'>
           <BudgetPieChart data={budgetData} />
         </div>
 
         {savingsData && (
-          <div className="w-full max-w-4xl">
-            <ProgressBar data={savingsData.savings_goals} title="Savings Progress" />
+          <div className='w-full max-w-4xl'>
+            <ProgressBar data={savingsData.savings_goals} title='Savings Progress' />
           </div>
         )}
       </div>
