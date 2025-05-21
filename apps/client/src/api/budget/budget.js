@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:8001/api/budget'
+export const BASE_URL = `${import.meta.env.VITE_API_URL}/api/budget`
 
 export const createBudget = async ({ category, amount_limit }) => {
     try {

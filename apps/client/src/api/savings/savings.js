@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8001/api/savings'
+const BASE_URL = `${import.meta.env.VITE_API_URL}/api/savings`
 
 export const createSavingsGoal = async ({ title, target_amount, current_amount }) => {
     try {

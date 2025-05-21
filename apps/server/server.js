@@ -34,7 +34,7 @@ app.get('/test-db', async (req, res) => {
 app.use(express.json())
 // To enable cross site communication
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['https://spendwise.vip','http://localhost:5173',],
     credentials: true
 }))
 // Catches multer errors to ensure safe image uploads to server

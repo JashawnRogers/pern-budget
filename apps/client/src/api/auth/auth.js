@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:8001/api/'
+export const BASE_URL = `${import.meta.env.VITE_API_URL}/api/`
 
 export const login = async ({email, password}) => {
     try {
