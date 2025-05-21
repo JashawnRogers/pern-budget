@@ -14,8 +14,8 @@ require('dotenv').config()
 const app = express()
 const PORT = process.env.PORT || 8001
 const allowedOrigins = [
-    process.env.CLIENT_URL,
-    process.env.LOCAL_URL
+    process.env.CLIENT_URL?.replace(/['";]/g, ''),
+    process.env.LOCAL_URL?.replace(/['";]/g, '')
 ]
 console.log('Allowed origins:', allowedOrigins)
 // MIDDLEWARE
