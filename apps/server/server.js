@@ -15,7 +15,6 @@ const app = express()
 const PORT = process.env.PORT || 8001
 const allowedOrigins = [
     process.env.CLIENT_URL,
-    process.env.PREVIEW_URL,
     process.env.LOCAL_URL
 ]
 console.log('Allowed origins:', allowedOrigins)
