@@ -34,7 +34,7 @@ app.get('/test-db', async (req, res) => {
 app.use(express.json())
 // To enable cross site communication
 app.use(cors({
-    origin: ['https://spendwise.vip','https://v0-spend-wise-three.vercel.app','http://localhost:5173',],
+    origin: ['https://www.spendwise.vip','https://v0-spend-wise-three.vercel.app','http://localhost:5173',],
     credentials: true
 }))
 // Catches multer errors to ensure safe image uploads to server
