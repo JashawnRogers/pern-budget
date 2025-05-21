@@ -12,13 +12,22 @@ const path = require('path')
 require('dotenv').config()
 
 const app = express()
+const PORT = process.env.PORT || 8001
+// app.use(express.static(path.join(__dirname, 'client/build')))
 
-app.use(express.static(path.join(__dirname, 'client/build')))
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+// })
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+app.get('/test-db', async (req, res) => {
+    try {
+      const result = await pool.query('SELECT NOW()')
+      res.json(result.rows[0])
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ error: 'Database connection failed' })
+    }
 })
-
 
 // MIDDLEWARE
 // To communicate with client
@@ -60,6 +69,6 @@ app.use('/api/transactions', transactionsRoute)
 app.use('/api/budget', budgetsRoute)
 app.use('/api/savings', savingsGoalsRoute)
 
-app.listen(8001, () => {
-    console.log('Server is listening on port 8001')
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT} `)
 })
