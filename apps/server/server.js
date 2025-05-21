@@ -18,10 +18,11 @@ const allowedOrigins = [
     process.env.PREVIEW_URL,
     process.env.LOCAL_URL
 ]
-
+console.log('Allowed origins:', allowedOrigins)
 // MIDDLEWARE
 // To communicate with client
 app.use(express.json())
+
 // To enable cross site communication
 app.use(cors({
     origin: function (origin, callback) {
@@ -29,6 +30,7 @@ app.use(cors({
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true)
       } else {
+        console.warn(`Blocked by CORS: ${origin}`)
         callback(new Error('Not allowed by CORS'))
       }
     },
