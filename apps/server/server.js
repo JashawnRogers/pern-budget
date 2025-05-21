@@ -11,6 +11,7 @@ const multer = require('multer')
 const path = require('path')
 require('dotenv').config()
 
+console.log('Starting SpendWise backend...')
 const app = express()
 const PORT = process.env.PORT || 8001
 const allowedOrigins = [
