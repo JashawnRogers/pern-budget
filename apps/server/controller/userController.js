@@ -62,6 +62,7 @@ module.exports = {
             res.status(202).json({message: 'User successfully logged in', user: req.session.user})
         } catch (error) {
             console.error(error)
+            console.error('Login Error: ', error)
             res.status(500).json({error: 'Internal server error', message: error.message})
         }
     },
