@@ -1,35 +1,38 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../assets/logo-transparent.svg'
-import { FaFacebook } from 'react-icons/fa6'
-import { FaInstagram } from 'react-icons/fa'
-import { FaLinkedin } from 'react-icons/fa'
-import { FaXTwitter } from 'react-icons/fa6'
+import { FaFacebook, FaInstagram, FaLinkedin, FaXTwitter } from 'react-icons/fa6'
 
 const Footer = () => {
   return (
-    <footer className='w-full mx-auto mt-8 mb-10 flex flex-col items-center'>
-        <div className='flex mt-16'>
-            <img src={logo} className='w-[170px]' alt="SpendWise logo" />
-            <h3 className='montesserat-400 text-xl ml-[-50px] mt-3'>Spendwise</h3>
-        </div>
-        <div className='flex justify-center gap-x-3 w-[170px] mt-4 ml-10'>
-            <Link to='www.facebook.com'>
-                <FaFacebook className='w-[25px] h-[25px]' />
-            </Link>
-            <Link to='www.instagram.com'>
-                <FaInstagram className='w-[25px] h-[25px]' />
-            </Link>
-            <Link to='www.linkedin.com'>
-                <FaLinkedin className='w-[25px] h-[25px]' />
-            </Link>
-            <Link to='www.twitter.com'>
-            <FaXTwitter className='w-[25px] h-[25px]' />
-            </Link>
-        </div>
-        <div className='mt-5'>
-            <p className='montesserat-300 pl-10'>&copy; {new Date().getFullYear()} SpendWise. All rights reserved.</p>
-        </div>
+    <footer className="w-full py-10 mt-8 mb-10 bg-white flex flex-col items-center text-center space-y-6">
+      
+      {/* Logo + Brand */}
+      <div className="flex flex-col items-center space-y-2">
+        <img src={logo} alt="SpendWise logo" className="w-48 h-auto" />
+        <h3 className="montesserat-400 text-xl">SpendWise</h3>
+      </div>
+
+      {/* Social Icons */}
+      <div className="flex items-center justify-center space-x-6">
+        <Link to="https://facebook.com" target="_blank">
+          <FaFacebook className="w-6 h-6 hover:text-green-700 transition-colors" />
+        </Link>
+        <Link to="https://instagram.com" target="_blank">
+          <FaInstagram className="w-6 h-6 hover:text-green-700 transition-colors" />
+        </Link>
+        <Link to="https://linkedin.com" target="_blank">
+          <FaLinkedin className="w-6 h-6 hover:text-green-700 transition-colors" />
+        </Link>
+        <Link to="https://twitter.com" target="_blank">
+          <FaXTwitter className="w-6 h-6 hover:text-green-700 transition-colors" />
+        </Link>
+      </div>
+
+      {/* Copyright */}
+      <p className="text-sm montesserat-300 text-gray-600">
+        &copy; {new Date().getFullYear()} SpendWise. All rights reserved.
+      </p>
     </footer>
   )
 }

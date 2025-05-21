@@ -8,8 +8,8 @@ const HowItWorks = () => {
     <section id='how-it-works' className='mt-28 px-4'>
       <div className='flex flex-col items-center gap-2 text-center'>
         <h2 className='montesserat-400 text-3xl sm:text-4xl md:text-5xl'>How It Works</h2>
-        <p className='montesserat-300 text-sm sm:text-base'>Embark on a seamless journey towards financial empowerment</p>
-        <p className='montesserat-300 text-sm sm:text-base'>with our finance budgeting dashboard.</p>
+        <p className='montesserat-300 text-sm sm:text-base'>Embark on a seamless journey towards financial<br/> empowerment with our finance budgeting dashboard.</p>
+        {/* <p className='montesserat-300 text-sm sm:text-base mt-[-8px]'>with our finance budgeting dashboard.</p> */}
       </div>
 
       <div className='flex flex-wrap gap-6 justify-center mt-12'>
