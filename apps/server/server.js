@@ -13,30 +13,28 @@ require('dotenv').config()
 
 const app = express()
 const PORT = process.env.PORT || 8001
-// app.use(express.static(path.join(__dirname, 'client/build')))
-
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
-// })
-
-app.get('/test-db', async (req, res) => {
-    try {
-      const result = await pool.query('SELECT NOW()')
-      res.json(result.rows[0])
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({ error: 'Database connection failed' })
-    }
-})
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    process.env.PREVIEW_URL,
+    process.env.LOCAL_URL
+]
 
 // MIDDLEWARE
 // To communicate with client
 app.use(express.json())
 // To enable cross site communication
 app.use(cors({
-    origin: ['https://www.spendwise.vip','https://v0-spend-wise-three.vercel.app','http://localhost:5173',],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl) or from the whitelist
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
     credentials: true
 }))
+
 // Catches multer errors to ensure safe image uploads to server
 app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
@@ -58,7 +56,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: { 
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         maxAge: 60000 * 60 * 24
     },
