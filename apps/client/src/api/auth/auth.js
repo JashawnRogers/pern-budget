@@ -74,5 +74,4 @@ export const getSession = async () => {
     } catch (error) {
         throw new Error(error.error || error.message ||'Server error - get user session')
     }
-
 }
