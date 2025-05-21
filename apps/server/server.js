@@ -67,6 +67,10 @@ app.use('/api/user', userRoute)
 app.use('/api/transactions', transactionsRoute)
 app.use('/api/budget', budgetsRoute)
 app.use('/api/savings', savingsGoalsRoute)
+app.get('/what-is-my-ip', (req, res) => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    res.send(`Your server's IP is: ${ip}`);
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT} `)
